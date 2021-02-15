@@ -10,8 +10,7 @@
                 {
                     if (array[j - 1] > array[j])
                     { 
-                        int swap;
-                        swap = array[j - 1];
+                        int swap = array[j - 1];
                         array[j - 1] = array[j];
                         array[j] = swap;
                     }

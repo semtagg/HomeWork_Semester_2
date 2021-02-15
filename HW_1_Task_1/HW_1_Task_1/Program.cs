@@ -18,7 +18,7 @@ namespace HW_1_Task_1
             Console.WriteLine("Введите размер массива: ");
             var arrayOfNumbers = new int[int.Parse(Console.ReadLine())];
             Console.WriteLine("Заполним массив рандомными числами и отсортируем.");
-            Random random = new Random();
+            var random = new Random();
             for (int i = 0; i < arrayOfNumbers.Length; i++)
             {
                 arrayOfNumbers[i] = random.Next() % 100;   
