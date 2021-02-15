@@ -19,12 +19,16 @@ namespace HW_1_Task_2
             var inputLine = Console.ReadLine() + specialSymbol;
             var outputLine = BWT.Inverse(inputLine);
             var result = BWT.Reverse(outputLine);
+            Console.WriteLine(outputLine+"\t"+ outputLine.Length);
+            
+            Console.WriteLine(result);
             if (String.Equals(result + specialSymbol, inputLine))
             {
                 Console.WriteLine("All right. Good job!");
             }
             else
             {
+                
                 Console.WriteLine("Oops... Error!\n");
             }
         }

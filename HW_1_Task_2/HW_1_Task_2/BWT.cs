@@ -5,52 +5,74 @@ namespace HW_1_Task_2
 {
     class BWT
     {
+        private static void BuildSuffixesArray(string[] newArray, string line)
+        {
+            for (int i = 0; i < line.Length; i++)
+            {
+                newArray[i] = line[i..^0];
+            }
+        }
+
+        private static string BuildOutputLine(string[] arrayOfSuffixes, string inputLine)
+        {
+            var outputLine = "";
+            for (int i = 0; i < inputLine.Length; i++)
+            {
+                outputLine += inputLine[(2 * inputLine.Length - (arrayOfSuffixes[i].Length + 1)) % inputLine.Length];
+            }
+            return outputLine;
+        }
+
         public static string Inverse(string inputLine)
         {
-            var arrayOfSuffix = new string[inputLine.Length];
-            for (int i = 0; i < inputLine.Length; i++)
+            var arrayOfSuffixes = new string[inputLine.Length];
+            BuildSuffixesArray(arrayOfSuffixes, inputLine);
+            Array.Sort(arrayOfSuffixes);
+            return (BuildOutputLine(arrayOfSuffixes, inputLine));
+        }
+
+        private static void BuildArrayOfPositions(int[] arrayOfPositions, char[] alphabetElements, string outputLine)
+        {
+            int countOfElements = 0;
+            for (int i = 0; i < alphabetElements.Length; i++)
             {
-                arrayOfSuffix[i] = inputLine[i..^0];
+                if (i >= 1)
+                {
+                    arrayOfPositions[i] += arrayOfPositions[i - 1] + countOfElements;
+                }
+                countOfElements = outputLine.Where(x => x == alphabetElements[i]).Count();
             }
-            Array.Sort(arrayOfSuffix);
-            string outputLine = "";
-            for (int i = 0; i < inputLine.Length; i++)
+        }
+
+        private static void BuildWayOfReverse(int[] wayOfReverse, int[] arrayOfPositions, char[] alphabetElements, string outputLine)
+        {
+            for (int i = 0; i < outputLine.Length; i++)
             {
-                outputLine += inputLine[(2 * inputLine.Length - (arrayOfSuffix[i].Length + 1)) % inputLine.Length];
+                 wayOfReverse[i] += arrayOfPositions[Array.IndexOf(alphabetElements, outputLine[i])] + 1;
+                 arrayOfPositions[Array.IndexOf(alphabetElements, outputLine[i])]++;
             }
-            return (outputLine);
+        }
+        private static string GetInputLine(int[] wayOfReverse, int[] arrayOfPositions, string outputLine, int key)
+        {            
+            var inputLine = "";
+            for (int i = 0; i < wayOfReverse.Length - 1; i++)
+            {
+                inputLine += outputLine[key - 1];
+                key = wayOfReverse[key - 1];
+            }
+            return inputLine;
         }
 
         public static string Reverse(string outputLine)
         {
-            var power = outputLine.Distinct().Count();
-            var count = new int[power];
-            var uniqueElements = string.Concat(outputLine.Select(s => $"{s}").Distinct()).ToCharArray();
-            Array.Sort(uniqueElements);
-            for (int i = 0; i < power; i++)
-            {
-                count[i] += outputLine.Where(x => x == uniqueElements[i]).Count();
-            }
-            var position = new int[power];
-            for (int i = 1; i < power; i++)
-            {
-                position[i] += position[i - 1] + count[i - 1];
-            }
-            string value = String.Concat<char>(uniqueElements);
-            var way = new int[outputLine.Length];
-            for (int i = 0; i < outputLine.Length; i++)
-            {
-                way[i] += position[value.IndexOf(outputLine[i], 0, uniqueElements.Length)];
-                position[value.IndexOf(outputLine[i], 0, uniqueElements.Length)]++;
-            }
-            string answer = "";
-            int key = 0;
-            for (int i = 0; i < outputLine.Length - 1; i++)
-            {
-                answer += outputLine[key];
-                key = way[key];
-            }
-            return new string(answer.Reverse().ToArray());
+            var alphabetElements = string.Concat(outputLine.Select(s => $"{s}").Distinct()).ToCharArray();
+            Array.Sort(alphabetElements);
+            var arrayOfPositions = new int[alphabetElements.Length];
+            BuildArrayOfPositions(arrayOfPositions, alphabetElements, outputLine);
+            var wayOfReverse = new int[outputLine.Length];
+            BuildWayOfReverse(wayOfReverse, arrayOfPositions, alphabetElements, outputLine);
+            var key = arrayOfPositions[Array.IndexOf(alphabetElements, '$')];            
+            return new string(GetInputLine(wayOfReverse, arrayOfPositions, outputLine, key).Reverse().ToArray());
         }
     }
 }
