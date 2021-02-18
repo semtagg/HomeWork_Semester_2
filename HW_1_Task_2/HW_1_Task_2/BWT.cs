@@ -77,41 +77,11 @@ namespace HW_1_Task_2
             classesArray = GetArrayOfClasses(countOfElements, alphabet, inputLine);
         }
 
-        private static string GetSecondPartOfCurrentPreffix(string inputLine, int position, int currentLength)
+        private static string GetPartOfCurrentPreffix(string inputLine, int begin, int end, int currentLength) 
         {
-            string secondPartOfCurrentPreffix;
-            if (position + currentLength > inputLine.Length)
-            {
-                secondPartOfCurrentPreffix = inputLine[position..];
-                if (position + currentLength > 2 * inputLine.Length)
-                {
-                    if (currentLength - (inputLine.Length - position) > inputLine.Length)
-                    {
-                        secondPartOfCurrentPreffix += inputLine + inputLine[..(currentLength - (2 * inputLine.Length - position))];
-                        return secondPartOfCurrentPreffix[(secondPartOfCurrentPreffix.Length / 2)..];
-                    }
-                }
-                secondPartOfCurrentPreffix += inputLine[..(currentLength - (inputLine.Length - position))];
-            }
-            else
-            {
-                secondPartOfCurrentPreffix = inputLine[position..(position + currentLength)];
-            }
-            return secondPartOfCurrentPreffix[(secondPartOfCurrentPreffix.Length / 2)..];
-        }
-
-        private static string GetFirstPartOfCurrentPreffix(string inputLine, int position, int currentLength)
-        {
-            string firstPartOfCurrentPreffix;
-            if (position + (currentLength / 2) <= inputLine.Length - 1)
-            {
-                firstPartOfCurrentPreffix = inputLine[position..(position + currentLength / 2)];
-            }
-            else
-            {
-                firstPartOfCurrentPreffix = inputLine[position..] + inputLine[..(currentLength / 2 - (inputLine.Length - position))];
-            }
-            return firstPartOfCurrentPreffix;
+            for (int i = 0; i < currentLength; i++)
+                inputLine += inputLine;
+            return inputLine[begin..end];
         }
 
         private static int[] GetHelpingArray(string inputLine, int[] positionsArray, int[] classesArray, int currentLength)
@@ -121,10 +91,8 @@ namespace HW_1_Task_2
             {
                 for (int j = 0; j < inputLine.Length; j++)
                 {
-                    if ((GetSecondPartOfCurrentPreffix(inputLine, positionsArray[i], currentLength)) == (GetFirstPartOfCurrentPreffix(inputLine, positionsArray[j], currentLength)))
-                    { 
+                    if (GetPartOfCurrentPreffix(inputLine, positionsArray[i] + currentLength / 2, positionsArray[i] + currentLength, currentLength) == GetPartOfCurrentPreffix(inputLine, positionsArray[j], positionsArray[j] + currentLength / 2, currentLength))
                         helpArray[i] = classesArray[j];
-                    }
                 }
             }
             return helpArray;
