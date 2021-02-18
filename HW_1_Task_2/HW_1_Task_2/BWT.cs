@@ -77,11 +77,31 @@ namespace HW_1_Task_2
             classesArray = GetArrayOfClasses(countOfElements, alphabet, inputLine);
         }
 
-        private static string GetPartOfCurrentPreffix(string inputLine, int begin, int end) 
+        private static string GetPartOfCurrentPreffix(string inputLine, int position, int currentLength, bool isFirstPart) 
         {
-            for (int i = 0; i < 2 * (end - begin); i++)
-                inputLine += inputLine;
-            return inputLine[begin..end];
+            string partOfCurrentPreffix;
+            if (position + currentLength > inputLine.Length)
+            {
+                partOfCurrentPreffix = inputLine[position..];
+                if (position + currentLength > 2 * inputLine.Length)
+                {
+                    if (currentLength - (inputLine.Length - position) > inputLine.Length)
+                    {                        
+                        partOfCurrentPreffix += inputLine + inputLine[..(currentLength - (2 * inputLine.Length - position))];
+                        if (isFirstPart)
+                            return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
+                        return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
+                    }
+                }
+                partOfCurrentPreffix += inputLine[..(currentLength - (inputLine.Length - position))];
+            }
+            else
+            {
+                partOfCurrentPreffix = inputLine[position..(position + currentLength)];
+            }
+            if (isFirstPart)
+                return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
+            return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
         }
 
         private static int[] GetHelpingArray(string inputLine, int[] positionsArray, int[] classesArray, int currentLength)
@@ -91,7 +111,7 @@ namespace HW_1_Task_2
             {
                 for (int j = 0; j < inputLine.Length; j++)
                 {
-                    if (GetPartOfCurrentPreffix(inputLine, positionsArray[i] + currentLength / 2, positionsArray[i] + currentLength) == GetPartOfCurrentPreffix(inputLine, positionsArray[j], positionsArray[j] + currentLength / 2))
+                    if (GetPartOfCurrentPreffix(inputLine, positionsArray[i], currentLength, false) == GetPartOfCurrentPreffix(inputLine, positionsArray[j], currentLength, true))
                         helpArray[i] = classesArray[j];
                 }
             }
