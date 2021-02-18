@@ -17,8 +17,8 @@ namespace HW_1_Task_2
             Console.WriteLine("Входные данные: ");
             char specialSymbol = '$';
             var inputLine = Console.ReadLine() + specialSymbol;
-            var outputLine = BWT.Inverse(inputLine);
-            var result = BWT.Reverse(outputLine);
+            var outputLine = BWT.Direct(inputLine);
+            var result = BWT.Inverse(outputLine);
             if (String.Equals(result + specialSymbol, inputLine))
             {
                 Console.WriteLine("All right. Good job!");
