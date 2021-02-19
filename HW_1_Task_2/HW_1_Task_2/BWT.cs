@@ -5,7 +5,7 @@ namespace HW_1_Task_2
 {
     class BWT
     {
-        public static void SpecialBubbleSort(int[] array, ref int[] secondArray, int begin, int end)
+        public static void SpecialBubbleSort(int[] array, int[] secondArray, int begin, int end)
         {
             for (int i = begin; i <= end; i++)
             {
@@ -77,7 +77,7 @@ namespace HW_1_Task_2
             classesArray = GetArrayOfClasses(countOfElements, alphabet, inputLine);
         }
 
-        private static string GetPartOfCurrentPreffix(string inputLine, int position, int currentLength, bool isFirstPart) 
+        private static string GetPartOfCurrentPrefix(string inputLine, int position, int currentLength, bool isFirstPart) 
         {
             string partOfCurrentPreffix;
             if (position + currentLength > inputLine.Length)
@@ -86,10 +86,12 @@ namespace HW_1_Task_2
                 if (position + currentLength > 2 * inputLine.Length)
                 {
                     if (currentLength - (inputLine.Length - position) > inputLine.Length)
-                    {                        
+                    {
                         partOfCurrentPreffix += inputLine + inputLine[..(currentLength - (2 * inputLine.Length - position))];
                         if (isFirstPart)
+                        {
                             return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
+                        }
                         return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
                     }
                 }
@@ -100,7 +102,9 @@ namespace HW_1_Task_2
                 partOfCurrentPreffix = inputLine[position..(position + currentLength)];
             }
             if (isFirstPart)
+            {
                 return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
+            }                
             return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
         }
 
@@ -111,14 +115,16 @@ namespace HW_1_Task_2
             {
                 for (int j = 0; j < inputLine.Length; j++)
                 {
-                    if (GetPartOfCurrentPreffix(inputLine, positionsArray[i], currentLength, false) == GetPartOfCurrentPreffix(inputLine, positionsArray[j], currentLength, true))
+                    if (GetPartOfCurrentPrefix(inputLine, positionsArray[i], currentLength, false) == GetPartOfCurrentPrefix(inputLine, positionsArray[j], currentLength, true))
+                    {
                         helpArray[i] = classesArray[j];
+                    }                        
                 }
             }
             return helpArray;
         }
 
-        private static void RebuildArrayOfPositions(int[] classesArray, ref int[] positionsArray, int[] helpArray)
+        private static void RebuildArrayOfPositions(int[] classesArray, int[] positionsArray, int[] helpArray)
         {
             for (int i = 0; i < classesArray.Length - 1; i++)
             {
@@ -128,19 +134,19 @@ namespace HW_1_Task_2
                 }
                 else if (classesArray[i] == classesArray[i + 1])
                 {
-                    int begin, end;
-                    begin = end = i;
+                    var begin = i;
+                    var end = i;
                     while ((i != (classesArray.Length - 1)) && (classesArray[i] == classesArray[i + 1]))
                     {
                         i++;
                     }
                     end = i;
-                    SpecialBubbleSort(helpArray, ref positionsArray, begin, end);
+                    SpecialBubbleSort(helpArray, positionsArray, begin, end);
                 }
             }
         }
 
-        private static void RebuildArrayOfClasses(ref int[] classesArray, int[] helpArray)
+        private static void RebuildArrayOfClasses(int[] classesArray, int[] helpArray)
         {
             var array = new int[classesArray.Length];
             for (int i = 0; i < classesArray.Length; i++)
@@ -161,14 +167,14 @@ namespace HW_1_Task_2
             }
         }
 
-        private static void PerfomRemainingIteration(string inputLine, ref int[] positionsArray, ref int[] classesArray)
+        private static void PerfomRemainingIteration(string inputLine, int[] positionsArray, int[] classesArray)
         {
             int currentLength = 2;            
             while (currentLength <= (int)Math.Pow(2, Math.Ceiling(Math.Log2(inputLine.Length))))
             {
                 var helpArray = GetHelpingArray(inputLine, positionsArray, classesArray, currentLength);
-                RebuildArrayOfPositions(classesArray, ref positionsArray, helpArray);
-                RebuildArrayOfClasses(ref classesArray, helpArray);
+                RebuildArrayOfPositions(classesArray, positionsArray, helpArray);
+                RebuildArrayOfClasses(classesArray, helpArray);
                 currentLength += 2;
             }
         }
@@ -188,10 +194,10 @@ namespace HW_1_Task_2
 
         public static string Direct(string inputLine)
         {
-            var positionsArray = new int[inputLine.Length];
-            var classesArray = new int[inputLine.Length];
+            int[] positionsArray;
+            int[] classesArray;
             PerfomZeroIteration(inputLine, out positionsArray, out classesArray);
-            PerfomRemainingIteration(inputLine, ref positionsArray, ref classesArray);
+            PerfomRemainingIteration(inputLine, positionsArray, classesArray);
             var outputLine = BuildAnswer(positionsArray, inputLine);
             return outputLine;
         }
@@ -222,7 +228,7 @@ namespace HW_1_Task_2
             return wayOfReverse;
         }
 
-        private static string GetInputLine(int[] wayOfReverse, int[] arrayOfPositions, string outputLine, int key)
+        private static string GetInputLine(int[] wayOfReverse, string outputLine, int key)
         {            
             var inputLine = "";
             for (int i = 0; i < wayOfReverse.Length - 1; i++)
@@ -240,7 +246,7 @@ namespace HW_1_Task_2
             var arrayOfPositions = BuildArrayOfPositions(alphabetElements, outputLine);            
             var wayOfReverse = BuildWayOfReverse(arrayOfPositions, alphabetElements, outputLine);
             var key = arrayOfPositions[Array.IndexOf(alphabetElements, '$')];            
-            return new string(GetInputLine(wayOfReverse, arrayOfPositions, outputLine, key).Reverse().ToArray());
+            return new string(GetInputLine(wayOfReverse, outputLine, key).Reverse().ToArray());
         }
     }
 }
