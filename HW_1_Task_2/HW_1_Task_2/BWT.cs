@@ -79,33 +79,25 @@ namespace HW_1_Task_2
 
         private static string GetPartOfCurrentPrefix(string inputLine, int position, int currentLength, bool isFirstPart) 
         {
-            string partOfCurrentPreffix;
+            string partOfCurrentPrefix;
             if (position + currentLength > inputLine.Length)
             {
-                partOfCurrentPreffix = inputLine[position..];
+                partOfCurrentPrefix = inputLine[position..];
                 if (position + currentLength > 2 * inputLine.Length)
                 {
                     if (currentLength - (inputLine.Length - position) > inputLine.Length)
                     {
-                        partOfCurrentPreffix += inputLine + inputLine[..(currentLength - (2 * inputLine.Length - position))];
-                        if (isFirstPart)
-                        {
-                            return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
-                        }
-                        return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
+                        partOfCurrentPrefix += inputLine + inputLine[..(currentLength - (2 * inputLine.Length - position))];
+                        return isFirstPart ? partOfCurrentPrefix[..(partOfCurrentPrefix.Length / 2)] : partOfCurrentPrefix[(partOfCurrentPrefix.Length / 2)..];
                     }
                 }
-                partOfCurrentPreffix += inputLine[..(currentLength - (inputLine.Length - position))];
+                partOfCurrentPrefix += inputLine[..(currentLength - (inputLine.Length - position))];
             }
             else
             {
-                partOfCurrentPreffix = inputLine[position..(position + currentLength)];
+                partOfCurrentPrefix = inputLine[position..(position + currentLength)];
             }
-            if (isFirstPart)
-            {
-                return partOfCurrentPreffix[..(partOfCurrentPreffix.Length / 2)];
-            }                
-            return partOfCurrentPreffix[(partOfCurrentPreffix.Length / 2)..];
+            return isFirstPart ? partOfCurrentPrefix[..(partOfCurrentPrefix.Length / 2)] : partOfCurrentPrefix[(partOfCurrentPrefix.Length / 2)..];
         }
 
         private static int[] GetHelpingArray(string inputLine, int[] positionsArray, int[] classesArray, int currentLength)
@@ -185,18 +177,20 @@ namespace HW_1_Task_2
             for (int i = 0; i < inputLine.Length; i++)
             {
                 if (array[i] == 0)
+                {
                     answer += inputLine[inputLine.Length - 1];
+                }
                 else
+                {
                     answer += inputLine[array[i] - 1];
+                }                
             }
             return answer;
         }
 
         public static string Direct(string inputLine)
         {
-            int[] positionsArray;
-            int[] classesArray;
-            PerfomZeroIteration(inputLine, out positionsArray, out classesArray);
+            PerfomZeroIteration(inputLine, out int[] positionsArray, out int[] classesArray);
             PerfomRemainingIteration(inputLine, positionsArray, classesArray);
             var outputLine = BuildAnswer(positionsArray, inputLine);
             return outputLine;
