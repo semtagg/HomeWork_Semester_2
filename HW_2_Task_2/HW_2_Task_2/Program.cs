@@ -7,8 +7,8 @@ namespace HW_2_Task_2
         static void Main(string[] args)
         {
             Console.WriteLine("Введите строку в постфиксной записи: ");
-            var element = new FirstCalculator();
-            Console.WriteLine(element.GetResult(Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries))); ;
+            var element = new Calculator(new ArrayCalc());
+            Console.WriteLine($"Резултат: {element.GetResult(Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries))}") ;
         }
     }
 }

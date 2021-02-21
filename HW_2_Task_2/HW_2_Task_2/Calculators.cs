@@ -4,64 +4,55 @@ using System.Text;
 
 namespace HW_2_Task_2
 {
-    interface ICalculator
+    class Calculator : ICalculator
     {
-        double GetResult(string[] inputLine);
-    }
-    class FirstCalculator : ICalculator
-    {
-
+        private IStack stack;
+        public Calculator(IStack stack)
+        {
+            this.stack = stack;
+        }
         public double GetResult(string[] inputLine)
         {
-            var array = new int[inputLine.Length];
-
-            int top = -1;
-
-            int x;
-            int res = 0;
+            
             for (int i = 0; i < inputLine.Length; i++)
             {
-                if (int.TryParse(inputLine[i], out x))
+                double current;
+                if (double.TryParse(inputLine[i], out current))
                 {
-                    top++;
-                    array[top] = x;
+                    stack.Push(current);
                 }
                 else
                 {
+                    var firstItem = stack.Pop();
+                    var secondItem = stack.Pop();
                     switch (inputLine[i])
                     {
+
                         case "+":
-                            res = array[top - 1] + array[top];
+                            stack.Push(firstItem + secondItem);
                             break;
                         case "-":
-                            res = array[top - 1] - array[top];
+                            stack.Push(firstItem - secondItem);
                             break;
                         case "*":
-                            res = array[top - 1] * array[top];
+                        {
+                            stack.Push(firstItem * secondItem);
                             break;
+                        }  
                         case "/":
-                            res = array[top - 1] / array[top];
+                        {
+                            if (secondItem < 10e-6)
+                            {
+                                throw new DivideByZeroException("Attempt to divide by zero!");
+                            }    
+                            stack.Push(secondItem / secondItem);
                             break;
+                        }
+                            
                     }
-                    top--;
-                    array[top] = res;
                 }
             }
-
-            return array[top];
+            return stack.Pop();
         }
     }
-    /*class SecondCalculator : ICalculator
-    {
-        public SecondCalculator(string line)
-        {
-            var inputLine = line;
-        }
-        public string GetLine => throw new NotImplementedException();
-
-        public double GetResult()
-        {
-            throw new NotImplementedException();
-        }
-    }*/
 }
