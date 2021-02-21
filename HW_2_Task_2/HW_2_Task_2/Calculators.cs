@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HW_2_Task_2
 {
@@ -41,7 +39,7 @@ namespace HW_2_Task_2
                         }  
                         case "/":
                         {
-                            if (secondItem < 10e-6)
+                            if (Math.Abs(secondItem) < 10e-6)
                             {
                                 throw new DivideByZeroException("Attempt to divide by zero!");
                             }    
