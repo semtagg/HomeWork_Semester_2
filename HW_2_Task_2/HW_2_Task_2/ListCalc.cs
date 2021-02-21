@@ -5,6 +5,7 @@ namespace HW_2_Task_2
     class ListCalc : Node, IStack
     {
         private Node root;
+
         public bool IsEmpty()
             => root == null;
 
