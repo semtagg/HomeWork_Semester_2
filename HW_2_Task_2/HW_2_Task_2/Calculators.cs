@@ -30,7 +30,7 @@ namespace HW_2_Task_2
                             stack.Push(firstItem + secondItem);
                             break;
                         case "-":
-                            stack.Push(firstItem - secondItem);
+                            stack.Push(secondItem - firstItem);
                             break;
                         case "*":
                         {
@@ -39,11 +39,11 @@ namespace HW_2_Task_2
                         }  
                         case "/":
                         {
-                            if (Math.Abs(secondItem) < 10e-6)
+                            if (Math.Abs(firstItem) < 10e-6)
                             {
                                 throw new DivideByZeroException("Attempt to divide by zero!");
                             }    
-                            stack.Push(secondItem / secondItem);
+                            stack.Push(secondItem / firstItem);
                             break;
                         }
                             

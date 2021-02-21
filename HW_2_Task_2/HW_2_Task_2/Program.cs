@@ -6,9 +6,22 @@ namespace HW_2_Task_2
     {
         static void Main(string[] args)
         {
+            if (Test.Tests())
+            {
+                Console.WriteLine("Tests were passed!");
+            }
+            else
+            {
+                Console.WriteLine("Tests weren't passed!");
+                return;
+            }
             Console.WriteLine("Введите строку в постфиксной записи: ");
-            var element = new Calculator(new ListCalc());
-            Console.WriteLine($"Резултат: {element.GetResult(Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries))}") ;
+            var inputLine = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var listCalcElement = new Calculator(new ListCalc());
+            var arrayCalcElement = new Calculator(new ArrayCalc());
+            Console.WriteLine($"Резултат стекового калькулятора на основе списка: {listCalcElement.GetResult(inputLine)}.");
+            Console.WriteLine($"\nРезултат стекового калькулятора на основе массива: { arrayCalcElement.GetResult(inputLine)}.");
+            Console.WriteLine("\nОни же равны?..");
         }
     }
 }
