@@ -2,7 +2,7 @@
 
 namespace HW_2_Task_2
 {
-    class Calculator : ICalculator
+    class Calculator
     {
         private IStack stack;
 
@@ -15,8 +15,7 @@ namespace HW_2_Task_2
         {
             for (int i = 0; i < inputLine.Length; i++)
             {
-                double current;
-                if (double.TryParse(inputLine[i], out current))
+                if (double.TryParse(inputLine[i], out double current))
                 {
                     stack.Push(current);
                 }
@@ -45,7 +44,8 @@ namespace HW_2_Task_2
                     }
                 }
             }
-            return stack.Pop();
+            var result = stack.Pop();
+            return !stack.IsEmpty() ? throw new InvalidOperationException("Array is not empty!") : result;
         }
     }
 }

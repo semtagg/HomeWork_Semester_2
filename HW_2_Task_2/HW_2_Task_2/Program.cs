@@ -17,10 +17,10 @@ namespace HW_2_Task_2
             }
             Console.WriteLine("Введите строку в постфиксной записи: ");
             var inputLine = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var listCalcElement = new Calculator(new ListCalc());
-            var arrayCalcElement = new Calculator(new ArrayCalc());
-            Console.WriteLine($"Резултат стекового калькулятора на основе списка: {listCalcElement.GetResult(inputLine)}.");
-            Console.WriteLine($"\nРезултат стекового калькулятора на основе массива: { arrayCalcElement.GetResult(inputLine)}.");
+            var secondCalcElement = new Calculator(new SecondStack());
+            var firstCalcElement = new Calculator(new FirstStack());
+            Console.WriteLine($"Результат стекового калькулятора на основе списка: {secondCalcElement.GetResult(inputLine)}.");
+            Console.WriteLine($"\nРезультат стекового калькулятора на основе массива: {firstCalcElement.GetResult(inputLine)}.");
             Console.WriteLine("\nОни же равны?..");
         }
     }
