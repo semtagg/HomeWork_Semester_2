@@ -12,10 +12,6 @@ namespace HW_2_Task_2
                 this.nextNode = nextNode;
             }
 
-            public Node()
-            {
-            }
-
             public double item;
             public Node nextNode;
         }
