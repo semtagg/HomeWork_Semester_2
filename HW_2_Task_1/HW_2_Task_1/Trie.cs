@@ -4,27 +4,27 @@ using System.Text;
 
 namespace HW_2_Task_1
 {
-    class Trie<T>
+    class Trie
     {
-        class Node<T>
+        class Node
         {
             public char Symbol { get; set; }
-            public T Data { get; set; }
+            public byte Index { get; set; }
             public bool IsWord { get; set; }
-            public string Prefix { get; set; }
+            public byte Data { get; set; }
 
-            public Dictionary<char, Node<T>> SubNodes { get; set; }
+            public Dictionary<char, Node> SubNodes { get; set; }
 
-            public Node(char symbol, T data)
+            public Node(char symbol, byte index)
             {
                 Symbol = symbol;
-                Data = data;
-                SubNodes = new Dictionary<char, Node<T>>();
+                Index = index;
+                SubNodes = new Dictionary<char, Node>();
             }
 
-            public Node<T> TryFind(char symbol)
+            public Node TryFind(char symbol)
             {
-                if (SubNodes.TryGetValue(symbol, out Node<T> value))
+                if (SubNodes.TryGetValue(symbol, out Node value))
                 {
                     return value;
                 }
@@ -33,33 +33,14 @@ namespace HW_2_Task_1
                     return null;
                 }
             }
-
-            public override string ToString()
-            {
-                return Data.ToString();
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (obj is Node<T> item)
-                {
-                    return Data.Equals(item);
-                }
-                else
-                {
-                    return false;
-                }
-            }
         }
-        private Node<T> root;
-        public int Count { get; set; }
+        private Node root;
         public Trie()
         {
-            root = new Node<T>('\0', default(T));
-            Count = 1;
+            root = new Node('\0', default(byte));
         }
 
-        private void AddNode(string key, T data, Node<T> node)
+        private (byte, bool) AddNode(string key, ref byte data, Node node)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -67,7 +48,14 @@ namespace HW_2_Task_1
                 {
                     node.Data = data;
                     node.IsWord = true;
+                    data++;
+                    return (node.Data, !node.IsWord);
                 }
+                else
+                {
+                    return (node.Data, !node.IsWord);
+                }
+                
             }
             else
             {
@@ -75,73 +63,20 @@ namespace HW_2_Task_1
                 var subnode = node.TryFind(symbol);
                 if (subnode != null)
                 {
-                    AddNode(key.Substring(1), data, subnode);
+                    return AddNode(key.Substring(1), ref data, subnode);
                 }
                 else
                 {
-                    var newNode = new Node<T>(symbol, data);
+                    var newNode = new Node(symbol, data);
                     node.SubNodes.Add(symbol, newNode);
-                    AddNode(key.Substring(1), data, newNode);
+                    return AddNode(key[1..],ref data, newNode);
                 }
             }
         }
-
-        public void Add(string key, T data)
+        private byte data;
+        public (byte, bool) Add(string key)
         {
-            AddNode(key, data, root);
-        }
-
-        private void RemoveNode(string key, Node<T> node)
-        {
-            if (string.IsNullOrEmpty(key))
-            {
-                if (node.IsWord)
-                {
-                    node.IsWord = false;
-                }
-            }
-            else
-            {
-                var subnode = node.TryFind(key[0]);
-                if (subnode != null)
-                {
-                    RemoveNode(key.Substring(1), subnode);
-                }
-            }
-        }
-
-        public void Remove(string key)
-        {
-            RemoveNode(key, root);
-        }
-        private bool SearchNode(string key, Node<T> node, out T value)
-        {
-            value = default(T);
-            var result = false;
-            if (string.IsNullOrEmpty(key))
-            {
-                if (node.IsWord)
-                {
-                    value = node.Data;
-                    result = true;
-                }
-            }
-            else
-            {
-                var subnode = node.TryFind(key[0]);
-                if (subnode != null)
-                {
-                    result = SearchNode(key.Substring(1), subnode, out value);
-                }
-            }
-            return result;
-        }
-        public bool Search(string key, out T value)
-        {
-            return SearchNode(key, root, out value);
+            return AddNode(key, ref data, root);
         }
     }
 }
-
-// key - все слово
-// symbol - один символ

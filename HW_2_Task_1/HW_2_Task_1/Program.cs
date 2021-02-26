@@ -1,30 +1,31 @@
 ﻿using System;
-
 namespace HW_2_Task_1
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var trie = new Trie<int>();
-            trie.Add("привет", 50);
-            trie.Add("мир", 100);
-            trie.Add("приз", 50);
-            trie.Add("мирный", 50);
-            trie.Add("подарок", 100);
-            trie.Add("проект", 50);
-            trie.Add("прапорщик", 50);
-            trie.Add("правый", 100);
-            trie.Add("год", 50);
-            trie.Add("герой", 50);
-            trie.Add("голубь", 100);
-            trie.Add("прокрастинация", 1000);
-            trie.Add("красота", 300);
-
+            /*var result = new LzwAlgorithm();
+            result.Decompress("a");
+            var trie = new Trie();
+            trie.Add("привет");
+            trie.Add("мир");
+            trie.Add("приз");
+            trie.Add("мирный");
+            trie.Add("подарок");
+            trie.Add("проект");
+            trie.Add("прапорщик");
+            trie.Add("правый");
+            trie.Add("год");
+            trie.Add("герой");
+            trie.Add("голубь");
+            trie.Add("прокрастинация");
+            trie.Add("красота");*/
+/*
             trie.Remove("правый");
             trie.Remove("мир");
 
-            int value;
+            byte value;
 
             if (trie.Search("привет", out value))
             {
@@ -49,8 +50,11 @@ namespace HW_2_Task_1
             else
             {
                 Console.WriteLine("Not find!");
-            }
-            var t = 1D;
+            }*/
+
+            var s = new LzwAlgorithm();
+            s.Compress("text.txt");
+            Console.WriteLine("");
         }
     }
 }
