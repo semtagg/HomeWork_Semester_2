@@ -2,7 +2,7 @@
 
 namespace HW_2_Task_2
 {
-    class SecondStack : IStack
+    class ListStack : IStack
     {
         private class Node
         {

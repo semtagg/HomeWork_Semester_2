@@ -2,7 +2,7 @@
 
 namespace HW_2_Task_2
 {
-    class FirstStack : IStack
+    class ArrayStack : IStack
     {
         private int index = -1;
         private double[] array = new double[2];

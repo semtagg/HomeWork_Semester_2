@@ -7,15 +7,17 @@ namespace HW_2_Task_2
         private IStack stack;
 
         public Calculator(IStack stack)
-        {
-            this.stack = stack;
-        }
+            => this.stack = stack;
 
-        public double GetResult(string[] inputLine)
+        private string[] GetArrayOfSymbols(string inputline)
+            => inputline.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        public double GetResult(string inputLine)
         {
-            for (int i = 0; i < inputLine.Length; i++)
+            var symbolsArray = GetArrayOfSymbols(inputLine);
+            for (int i = 0; i < symbolsArray.Length; i++)
             {
-                if (double.TryParse(inputLine[i], out double current))
+                if (double.TryParse(symbolsArray[i], out double current))
                 {
                     stack.Push(current);
                 }
@@ -23,7 +25,7 @@ namespace HW_2_Task_2
                 {
                     var firstItem = stack.Pop();
                     var secondItem = stack.Pop();
-                    switch (inputLine[i])
+                    switch (symbolsArray[i])
                     {
                         case "+":                       
                             stack.Push(firstItem + secondItem);
