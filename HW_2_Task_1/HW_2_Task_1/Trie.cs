@@ -9,22 +9,25 @@ namespace HW_2_Task_1
         class Node
         {
             public char Symbol { get; set; }
-            public byte Index { get; set; }
+
             public bool IsWord { get; set; }
-            public byte Data { get; set; }
 
-            public Dictionary<char, Node> SubNodes { get; set; }
+            public int Index { get; set; }
 
-            public Node(char symbol, byte index)
+            public int Data { get; set; }
+
+            public Dictionary<char, Node> subnodes {get; set;}
+
+
+            public Node(char symbol, int index)
             {
                 Symbol = symbol;
                 Index = index;
-                SubNodes = new Dictionary<char, Node>();
+                subnodes = new Dictionary<char, Node>();
             }
-
             public Node TryFind(char symbol)
             {
-                if (SubNodes.TryGetValue(symbol, out Node value))
+                if (subnodes.TryGetValue(symbol, out Node value))
                 {
                     return value;
                 }
@@ -37,46 +40,52 @@ namespace HW_2_Task_1
         private Node root;
         public Trie()
         {
-            root = new Node('\0', default(byte));
+            root = new Node('\0', default(int));
         }
 
-        private (byte, bool) AddNode(string key, ref byte data, Node node)
+        private int count;
+        private (int,bool) AddNode(string key, Node node)
         {
+
             if (string.IsNullOrEmpty(key))
             {
                 if (!node.IsWord)
                 {
-                    node.Data = data;
+                    node.Data = count;
+                    count++;
                     node.IsWord = true;
-                    data++;
-                    return (node.Data, !node.IsWord);
+                    return (node.Data,true);
                 }
                 else
                 {
-                    return (node.Data, !node.IsWord);
+                    return (node.Data,false);
                 }
-                
             }
             else
             {
                 var symbol = key[0];
                 var subnode = node.TryFind(symbol);
                 if (subnode != null)
-                {
-                    return AddNode(key.Substring(1), ref data, subnode);
+                {                   
+                    return AddNode(key[1..], subnode);
                 }
                 else
                 {
-                    var newNode = new Node(symbol, data);
-                    node.SubNodes.Add(symbol, newNode);
-                    return AddNode(key[1..],ref data, newNode);
+                    var newSubnode = new Node(symbol, count);
+                    node.subnodes.Add(symbol, newSubnode);
+                    return AddNode(key[1..], newSubnode);
                 }
             }
         }
-        private byte data;
-        public (byte, bool) Add(string key)
+
+        public int Add(string key)
         {
-            return AddNode(key, ref data, root);
+            (var result, var isChanged) = AddNode(key, root);
+            if (!isChanged)
+            {
+                return result;
+            }
+            return -1;
         }
     }
 }

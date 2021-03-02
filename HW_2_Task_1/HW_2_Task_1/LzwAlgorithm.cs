@@ -1,49 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HW_2_Task_1
 {
-    class LzwAlgorithm : ILzwAlgorithm
+    class LzwAlgorithm //: ILzwAlgorithm
     {
-        private void Initalisation(Trie trie) // name
+        private static Trie Initalisation() // name
         {
-
-            for (byte i = 0; i < 255; i++)
+            var trie = new Trie();
+            for (int i = 0; i < 256; i++)
             {
-                var newLine = $"{(char)i}";
-                trie.Add(newLine);
+                trie.Add($"{(char)i}");
             }
+            return trie;
         }
         public void Compress(string readPath)
         {
             var writePath = readPath + ".zipped";
-            using (var read = new FileStream(readPath,FileMode.Open))
+            using (var readFile = new FileStream(readPath,FileMode.Open))
             {
-                var array = new byte[read.Length];
-                read.Read(array, 0, array.Length);
-                using (var write = new FileStream(writePath, FileMode.OpenOrCreate))
+                var arrayOfBytes = new byte[readFile.Length];
+                readFile.Read(arrayOfBytes, 0, arrayOfBytes.Length);
+                using (var writeFile = new FileStream(writePath, FileMode.OpenOrCreate))
                 {
-                    var trie = new Trie();
-                    Initalisation(trie);
-                    for (int i = 0; i < array.Length; i++)
+                    var trie = Initalisation();
+                    for (int i = 0; i < arrayOfBytes.Length; i++)
                     {
-                        var currentLine = $"{array[i]}";
-                        (var data, var result) = trie.Add(currentLine);
-                        while (result)
+                        int lastResult = -1;
+                        var currentLine = $"{(char)arrayOfBytes[i]}";
+                        var result = trie.Add(currentLine);
+                        while (result != -1)
                         {
+                            lastResult = result;
                             i++;
-                            currentLine += $"{array[i]}";
+                            if (i == readFile.Length)
+                            {
+                                break;
+                            }
+                            currentLine += $"{(char)arrayOfBytes[i]}";
+                            result = trie.Add(currentLine);
+                            
                         }
-                        write.Write(BitConverter.GetBytes(data));
+                        i--;
+                        var helpArray = BitConverter.GetBytes(lastResult);
+                        var index = (int)Math.Ceiling(Math.Log2(lastResult) / 8);
+                        if (index == 0)
+                        {
+                            index = 1;
+                        }
+                        writeFile.Write(helpArray, 0, index);
                     }
                 }
             }
         }
 
-        public string Decompress(string outputLine)
+        public void Decompress(string readPath)
         {
             throw new NotImplementedException();
         }
