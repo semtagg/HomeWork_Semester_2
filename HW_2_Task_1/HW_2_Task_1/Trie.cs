@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace HW_2_Task_1
 {
@@ -8,26 +6,24 @@ namespace HW_2_Task_1
     {
         class Node
         {
-            public char Symbol { get; set; }
-
-            public bool IsWord { get; set; }
+            public byte Symbol { get; set; }
 
             public int Index { get; set; }
 
             public int Data { get; set; }
 
-            public Dictionary<char, Node> subnodes {get; set;}
+            public Dictionary<byte, Node> Subnodes { get; set; }
 
-
-            public Node(char symbol, int index)
+            public Node(byte symbol, int index)
             {
                 Symbol = symbol;
                 Index = index;
-                subnodes = new Dictionary<char, Node>();
+                Subnodes = new Dictionary<byte, Node>();
             }
-            public Node TryFind(char symbol)
+
+            public Node TryFind(byte symbol)
             {
-                if (subnodes.TryGetValue(symbol, out Node value))
+                if (Subnodes.TryGetValue(symbol, out Node value))
                 {
                     return value;
                 }
@@ -37,55 +33,65 @@ namespace HW_2_Task_1
                 }
             }
         }
+
+        public int LastResult { get; set; }
+
+        public int Count { get; set; }
+
         private Node root;
+        private static Node staticRoot;
+
         public Trie()
         {
-            root = new Node('\0', default(int));
+            root = new Node(0, 0);
+            for (int i = 0; i < 256; i++)
+            {
+                Init((byte)i);
+            }
+            staticRoot = root;
         }
 
-        private int count;
-        private (int,bool) AddNode(string key, Node node)
+        private void Init(byte key)
         {
+            var newSubnode = new Node(key, Count);
+            root.Subnodes.Add(key, newSubnode);
+            newSubnode.Data = Count;
+            Count++;
+        }
 
-            if (string.IsNullOrEmpty(key))
+        private (int, bool) AddNode(byte key, ref Node node)
+        {
+            if (node.TryFind(key) != null)
             {
-                if (!node.IsWord)
-                {
-                    node.Data = count;
-                    count++;
-                    node.IsWord = true;
-                    return (node.Data,true);
-                }
-                else
-                {
-                    return (node.Data,false);
-                }
+                node = node.Subnodes[key];
+                return (node.Data, false);
             }
             else
             {
-                var symbol = key[0];
-                var subnode = node.TryFind(symbol);
-                if (subnode != null)
-                {                   
-                    return AddNode(key[1..], subnode);
-                }
-                else
-                {
-                    var newSubnode = new Node(symbol, count);
-                    node.subnodes.Add(symbol, newSubnode);
-                    return AddNode(key[1..], newSubnode);
-                }
+                var newSubnode = new Node(key, Count);
+                newSubnode.Data = Count;
+                node.Subnodes.Add(key, newSubnode);
+                Count++;
+                return (-1, true);
             }
         }
 
-        public int Add(string key)
+        public int TryAdd(byte key)
         {
-            (var result, var isChanged) = AddNode(key, root);
+            (var result, var isChanged) = AddNode(key, ref root);
             if (!isChanged)
             {
-                return result;
+                LastResult = result;
+                return -1;
             }
-            return -1;
+            else
+            {
+                root = staticRoot;
+                return LastResult;
+            }
         }
+
+        public int GetLastResult()
+            => LastResult;
     }
 }
