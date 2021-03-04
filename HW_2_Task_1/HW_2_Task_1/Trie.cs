@@ -39,6 +39,7 @@ namespace HW_2_Task_1
         public int Count { get; set; }
 
         private Node root;
+
         private static Node staticRoot;
 
         public Trie()

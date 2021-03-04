@@ -42,7 +42,6 @@ namespace HW_2_Task_1
                     writeFile.Write(helpArray, 0, currentNumberOfBytes);
                     i--;
                 }
-                
             }
         }
 
@@ -55,7 +54,7 @@ namespace HW_2_Task_1
             }
             return hashtable;
         }
-
+        
         public static void Decompress(string readPath)
         {
             using var readFile = new FileStream(readPath, FileMode.Open);
