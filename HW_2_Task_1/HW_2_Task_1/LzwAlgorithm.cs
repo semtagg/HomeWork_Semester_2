@@ -85,10 +85,9 @@ namespace HW_2_Task_1
                     lastHashtableAdd[^1] = firstElement;
                 }
                 var arrayForWrite = (byte[])hashtable[index];
+                writeFile.Write(arrayForWrite);
                 Array.Resize(ref arrayForWrite, arrayForWrite.Length + 1);
                 hashtable.Add(currentHashtableIndex, arrayForWrite);
-                Array.Resize(ref arrayForWrite, arrayForWrite.Length - 1);
-                writeFile.Write(arrayForWrite);
                 currentHashtableIndex++;
                 if (currentNumberOfBytes < (int)Math.Ceiling(Math.Log2(hashtable.Count) / 8))
                 {
