@@ -80,15 +80,12 @@ namespace HW_2_Task_1
                 var index = BitConverter.ToInt32(arrayOfBytes, 0);
                 if (currentHashtableIndex != 256)
                 {
-                    var firstElement = ((byte[])hashtable[index])[0];
-                    var lastHashtableAdd = (byte[])hashtable[currentHashtableIndex - 1];
-                    lastHashtableAdd[^1] = firstElement;
+                    ((byte[])hashtable[currentHashtableIndex - 1])[^1] = ((byte[])hashtable[index])[0];
                 }
                 var arrayForWrite = (byte[])hashtable[index];
+                writeFile.Write(arrayForWrite);
                 Array.Resize(ref arrayForWrite, arrayForWrite.Length + 1);
                 hashtable.Add(currentHashtableIndex, arrayForWrite);
-                Array.Resize(ref arrayForWrite, arrayForWrite.Length - 1);
-                writeFile.Write(arrayForWrite);
                 currentHashtableIndex++;
                 if (currentNumberOfBytes < (int)Math.Ceiling(Math.Log2(hashtable.Count) / 8))
                 {
