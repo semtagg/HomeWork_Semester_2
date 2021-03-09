@@ -2,8 +2,11 @@
 
 namespace HW_2_Task_1
 {
-    class Trie
-    {
+    /// <summary>
+    /// A data structure called the Prefix tree.
+    /// </summary>
+    public class Trie
+    { 
         class Node
         {
             public byte Symbol { get; set; }
@@ -77,6 +80,11 @@ namespace HW_2_Task_1
             }
         }
 
+        /// <summary>
+        /// Trying add new symbol to the tree.
+        /// </summary>
+        /// <param name="key">The symbol we want to add to the tree.</param>
+        /// <returns>"-1" - symbol is already there, else - last result.</returns>
         public int TryAdd(byte key)
         {
             (var result, var isChanged) = AddNode(key, ref root);
@@ -92,6 +100,10 @@ namespace HW_2_Task_1
             }
         }
 
+        /// <summary>
+        /// Get the last result manually.
+        /// </summary>
+        /// <returns>The last result.</returns>
         public int GetLastResult()
             => LastResult;
     }

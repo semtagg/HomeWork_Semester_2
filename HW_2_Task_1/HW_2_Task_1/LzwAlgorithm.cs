@@ -4,8 +4,15 @@ using System.IO;
 
 namespace HW_2_Task_1
 {
-    static class LzwAlgorithm
+    /// <summary>
+    /// The algorithm used to compress and decompress files.
+    /// </summary>
+    public static class LzwAlgorithm
     {
+        /// <summary>
+        /// Сompresses the file and writes it in a new file.
+        /// </summary>
+        /// <param name="readPath">Path to the file which we want to compress.</param>
         public static void Compress(string readPath)
         {
             using var readFile = new FileStream(readPath, FileMode.Open);
@@ -54,7 +61,11 @@ namespace HW_2_Task_1
             }
             return hashtable;
         }
-        
+
+        /// <summary>
+        /// Decompresses the file and writes it in a new file.
+        /// </summary>
+        /// <param name="readPath">Path to the file which we want to decompress.</param>
         public static void Decompress(string readPath)
         {
             using var readFile = new FileStream(readPath, FileMode.Open);
