@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System.IO;
 
-
 namespace HW_2_Task_1
 {
     [TestFixture]
@@ -17,7 +16,7 @@ namespace HW_2_Task_1
             }
             for (int i = 0; i < readFile.Length; i++)
             {
-                if ((byte)readFile.ReadByte() != (byte)writeFile.ReadByte())
+                if (readFile.ReadByte() != writeFile.ReadByte())
                 {
                     return false;
                 }
@@ -32,10 +31,9 @@ namespace HW_2_Task_1
             var writeFilePath = "../testTxtBefore.txt";
             LzwAlgorithm.Compress(readFilePath);
             File.Delete(readFilePath);
-            LzwAlgorithm.Decompress(readFilePath+".zipped");
-            Assert.IsTrue(IsEqual(readFilePath,writeFilePath));
-            File.Delete(readFilePath);
-            File.Delete(writeFilePath);
+            LzwAlgorithm.Decompress(readFilePath + ".zipped");
+            Assert.IsTrue(IsEqual(readFilePath, writeFilePath));
+            File.Delete(readFilePath + ".zipped");
         }
 
         [TestCase]
@@ -47,8 +45,7 @@ namespace HW_2_Task_1
             File.Delete(readFilePath);
             LzwAlgorithm.Decompress(readFilePath + ".zipped");
             Assert.IsTrue(IsEqual(readFilePath, writeFilePath));
-            File.Delete(readFilePath);
-            File.Delete(writeFilePath);
+            File.Delete(readFilePath + ".zipped");
         }
     }
 }

@@ -7,7 +7,7 @@ namespace HW_2_Task_1
     /// </summary>
     public class Trie
     { 
-        class Node
+        private class Node
         {
             public byte Symbol { get; set; }
 
@@ -41,24 +41,23 @@ namespace HW_2_Task_1
 
         public int Count { get; set; }
 
-        private Node root;
+        private Node cursor;
 
-        private static Node staticRoot;
+        private Node staticCursor = new Node(0,0);
 
         public Trie()
         {
-            root = new Node(0, 0);
+            cursor = staticCursor;
             for (int i = 0; i < 256; i++)
             {
                 Init((byte)i);
             }
-            staticRoot = root;
         }
 
         private void Init(byte key)
         {
             var newSubnode = new Node(key, Count);
-            root.Subnodes.Add(key, newSubnode);
+            cursor.Subnodes.Add(key, newSubnode);
             newSubnode.Data = Count;
             Count++;
         }
@@ -87,7 +86,7 @@ namespace HW_2_Task_1
         /// <returns>"-1" - symbol is already there, else - last result.</returns>
         public int TryAdd(byte key)
         {
-            (var result, var isChanged) = AddNode(key, ref root);
+            (var result, var isChanged) = AddNode(key, ref cursor);
             if (!isChanged)
             {
                 LastResult = result;
@@ -95,7 +94,7 @@ namespace HW_2_Task_1
             }
             else
             {
-                root = staticRoot;
+                cursor = staticCursor;
                 return LastResult;
             }
         }

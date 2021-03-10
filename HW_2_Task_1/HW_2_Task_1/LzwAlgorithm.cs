@@ -9,6 +9,9 @@ namespace HW_2_Task_1
     /// </summary>
     public static class LzwAlgorithm
     {
+        private static int GetCurrentNumberOfBytes(int size, int count)
+            => (int)Math.Ceiling(Math.Log2(size) / 8) > count ? (int)Math.Ceiling(Math.Log2(size) / 8) : count;
+
         /// <summary>
         /// Сompresses the file and writes it in a new file.
         /// </summary>
@@ -19,15 +22,12 @@ namespace HW_2_Task_1
             using var writeFile = new FileStream(readPath + ".zipped", FileMode.OpenOrCreate);
             var trie = new Trie();
             var currentNumberOfBytes = 1;
-            var check = false;
+            var isChanged = false;
             var currentByte = (byte)0;
             for (int i = 0; i < readFile.Length; i++)
             {
-                if ((int)Math.Ceiling(Math.Log2(trie.Count) / 8) > currentNumberOfBytes)
-                {
-                    currentNumberOfBytes = (int)Math.Ceiling(Math.Log2(trie.Count) / 8);
-                }
-                if (!check)
+                currentNumberOfBytes = GetCurrentNumberOfBytes(trie.Count, currentNumberOfBytes);
+                if (!isChanged)
                 {
                     currentByte = (byte)readFile.ReadByte();
                 }
@@ -39,12 +39,12 @@ namespace HW_2_Task_1
                 }
                 if (result == -1)
                 {
-                    check = false;
+                    isChanged = false;
                     continue;
                 }
                 else
                 {
-                    check = true;
+                    isChanged = true;
                     var helpArray = BitConverter.GetBytes(result);
                     writeFile.Write(helpArray, 0, currentNumberOfBytes);
                     i--;
@@ -98,10 +98,7 @@ namespace HW_2_Task_1
                 Array.Resize(ref arrayForWrite, arrayForWrite.Length + 1);
                 hashtable.Add(currentHashtableIndex, arrayForWrite);
                 currentHashtableIndex++;
-                if (currentNumberOfBytes < (int)Math.Ceiling(Math.Log2(hashtable.Count) / 8))
-                {
-                    currentNumberOfBytes = (int)Math.Ceiling(Math.Log2(hashtable.Count) / 8);
-                }
+                currentNumberOfBytes = GetCurrentNumberOfBytes(hashtable.Count, currentNumberOfBytes);
             } 
         }
     }

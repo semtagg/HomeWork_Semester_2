@@ -7,9 +7,17 @@ namespace HW_2_Task_1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите полное имя файла: ");
-            Console.WriteLine("Введите ключ:\n1) '-c', если хотите сжать файл.\n2) '-u', если хотите разжать файл.");
-            if (args[0] == "-c")
+            if ((args.Length != 2) && (args[0] != "-c") && (args[0] != "-u"))
+            {
+                Console.WriteLine("Ошибка ввода ключа, попробуйте еще раз.");
+                return;
+            }
+            else if (!File.Exists(args[1]))
+            {
+                Console.WriteLine("Ошибка ввода ссылки на файл, попробуйте еще раз.");
+                return;
+            }
+            else if (args[0] == "-c")
             {
                 LzwAlgorithm.Compress(args[1]);
                 var compressedFileSize = new FileInfo(args[1]);
