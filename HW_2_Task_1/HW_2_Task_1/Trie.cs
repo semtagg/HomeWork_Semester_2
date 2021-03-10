@@ -43,11 +43,11 @@ namespace HW_2_Task_1
 
         private Node cursor;
 
-        private Node staticCursor = new Node(0,0);
+        private Node root = new Node(0, 0);
 
         public Trie()
         {
-            cursor = staticCursor;
+            cursor = root;
             for (int i = 0; i < 256; i++)
             {
                 Init((byte)i);
@@ -94,7 +94,7 @@ namespace HW_2_Task_1
             }
             else
             {
-                cursor = staticCursor;
+                cursor = root;
                 return LastResult;
             }
         }
