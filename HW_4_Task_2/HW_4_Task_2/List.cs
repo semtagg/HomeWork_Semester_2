@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HW_4_Task_2
 {
@@ -101,13 +99,13 @@ namespace HW_4_Task_2
             root = SearchByValue(value);
             if (root == null)
             {
-                // кинуть ошибку из созданного класса
+                throw new DeleteElementError("Element not exist.");
             }
             else
             {
                 var helpElement = root.NextNode;
                 root.NextNode = (root.NextNode).NextNode;
-                helpElement = null; 8
+                helpElement = null;
             }
         }
     }
