@@ -2,7 +2,10 @@
 
 namespace HW_4_Task_2
 {
-    class List
+    /// <summary>
+    /// Abstract data type that represents a countable number of ordered values.
+    /// </summary>
+    public class List
     {
         protected class ListNode
         {
@@ -43,13 +46,20 @@ namespace HW_4_Task_2
         protected ListNode SearchByValue(int value)
         {
             root = head;
-            while ((root.Value != value) || (root != null))
+            while (root != null)
             {
+                if ((root.NextNode != null) &&((root.NextNode).Value == value))
+                {
+                    return root;
+                }
                 root = root.NextNode;
             }
             return root;
         }
 
+        /// <summary>
+        /// Inserts the value of the new element by the index.
+        /// </summary>
         public virtual void InsertByIndex(int value, int index)
         {
             if (!IndexCheck(index))
@@ -64,7 +74,7 @@ namespace HW_4_Task_2
             }
             else
             {
-                SearchByIndex(index);
+                SearchByIndex(index - 1);
                 var helpElement = root.NextNode;
                 root.NextNode = new ListNode(value);
                 (root.NextNode).NextNode = helpElement;
@@ -72,6 +82,9 @@ namespace HW_4_Task_2
             }
         }
 
+        /// <summary>
+        /// Removes the value of the element by the index.
+        /// </summary>
         public void RemoveByIndex(int index)
         {
             if (!IndexCheck(index))
@@ -84,7 +97,10 @@ namespace HW_4_Task_2
             helpElement = null;
         }
 
-        public void ChangeByIndex(int index, int value)
+        /// <summary>
+        /// Changes the value of the element by the index.
+        /// </summary>
+        public void ChangeByIndex(int value, int index)
         {
             if (!IndexCheck(index))
             {
@@ -94,19 +110,70 @@ namespace HW_4_Task_2
             root.Value = value;
         }
 
+        /// <summary>
+        /// Tries to remove an element by the index.
+        /// </summary>
         public void RemoveByValue(int value)
         {
-            root = SearchByValue(value);
-            if (root == null)
+            if (root == head)
             {
-                throw new DeleteElementError("Element not exist.");
+                head = null;
+                root = head;
             }
             else
             {
-                var helpElement = root.NextNode;
-                root.NextNode = (root.NextNode).NextNode;
-                helpElement = null;
+                root = SearchByValue(value);
+                if (root == null)
+                {
+                    throw new DeleteElementException("Element not exist.");
+                }
+                else
+                {
+                    var helpElement = root.NextNode;
+                    root.NextNode = (root.NextNode).NextNode;
+                    helpElement = null;
+                }
             }
+                
+        }
+
+        /// <summary>
+        /// Returns value of the last element.
+        /// </summary>
+        public int GetLastValue()
+        {
+            root = head;
+            while (root.NextNode != null)
+            {
+                root = root.NextNode;
+            }
+            return root.Value;
+        }
+
+        /// <summary>
+        /// Returns value of the element by the index.
+        /// </summary>
+        public int GetValueByIndex(int index)
+        {
+            if (!IndexCheck(index))
+            {
+                throw new IndexOutOfRangeException();
+            }
+            SearchByIndex(index);
+            return root.Value;
+        }
+
+        protected bool CheckValue(int value)
+        {
+            root = head;
+            while (root != null)
+            {
+                if (root.Value == value)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
