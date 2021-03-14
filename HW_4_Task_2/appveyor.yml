@@ -1,5 +1,6 @@
-environment:
-matrix:
-- solution_name: HomeWork_Semester_2/HW_4_Task_2/HW_4_Task_2.sln
-build_script:
-- msbuild %HW_4_Task_2%
+image: Visual Studio 2019
+
+build_script: 
+    - For /R %%I in (*.sln) do dotnet test %%I
+
+test: off 
