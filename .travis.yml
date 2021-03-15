@@ -1,11 +1,9 @@
+os: windows
+dist: bionic
 language: csharp
 mono: none
-dotnet: 5.0
-solution: HW_4_Task_2.sln
-
+dotnet: 5.0.100
+before_script:
+  - dotnet restore
 script:
-  - dotnet publish --configuration Release --runtime win-x64 /p:PublishSingleFile=true --outpute win-64
-
-deploy:
-  provider: releases
-  apy_key: $.NET Core
+  - dotnet test ./HW_4_Task_2/HW_4_Task_2.Tests -c Release -f net5.0
