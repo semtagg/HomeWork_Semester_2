@@ -70,16 +70,26 @@ namespace HW_4_Task_2
             {
                 root = new ListNode(value);
                 head = root;
-                listSize++;
             }
             else
             {
-                SearchByIndex(index - 1);
-                var helpElement = root.NextNode;
-                root.NextNode = new ListNode(value);
-                (root.NextNode).NextNode = helpElement;
-                listSize++;
+                ListNode helpNode;
+                root = head;
+                if (index == 0)
+                {
+                    helpNode = root;
+                    root.NextNode = helpNode;
+                    root.Value = value;
+                }
+                else
+                {
+                    SearchByIndex(index - 1);
+                    helpNode = root.NextNode;
+                    root.NextNode = new ListNode(value);
+                    (root.NextNode).NextNode = helpNode;
+                }
             }
+            listSize++;
         }
 
         /// <summary>
@@ -143,6 +153,10 @@ namespace HW_4_Task_2
         public int GetLastValue()
         {
             root = head;
+            if (root == null)
+            {
+                throw new NullReferenceException();
+            }
             while (root.NextNode != null)
             {
                 root = root.NextNode;
@@ -155,7 +169,7 @@ namespace HW_4_Task_2
         /// </summary>
         public int GetValueByIndex(int index)
         {
-            if (!IndexCheck(index))
+            if (!IndexCheck(index + 1))
             {
                 throw new IndexOutOfRangeException();
             }
