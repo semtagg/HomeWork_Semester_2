@@ -1,11 +1,11 @@
 language: csharp
-
 mono: none
 dotnet: 5.0
+solution: HW_4_Task_2.sln
 
-before_build:
-    - nuget restore HW_4_Task_2/HW_4_Task_2.sln
-build:
-    - dotnet build HW_4_Task_2/HW_4_Task_2.sln
 script:
-    - dotnet test $.NET Core
+  - dotnet publish --configuration Release --runtime win-x64 /p:PublishSingleFile=true --outpute win-64
+
+deploy:
+  provider: releases
+  apy_key: $.NET Core
