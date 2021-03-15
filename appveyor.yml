@@ -1,6 +1,0 @@
-image: Visual Studio 2019
-
-build_script: 
-    - For /R %%I in (*.sln) do dotnet test %%I
-
-test: off
