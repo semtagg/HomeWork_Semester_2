@@ -2,7 +2,7 @@ os: windows
 dist: bionic
 language: csharp
 mono: none
-dotnet: 5.0.100
+dotnet: 5.0.102
 before_script:
   - dotnet restore
 script:
