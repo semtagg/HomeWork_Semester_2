@@ -125,10 +125,9 @@ namespace HW_4_Task_2
         /// </summary>
         public void RemoveByValue(int value)
         {
-            if (root == head)
+            if (root == null)
             {
-                head = null;
-                root = head;
+                throw new NullReferenceException();
             }
             else
             {

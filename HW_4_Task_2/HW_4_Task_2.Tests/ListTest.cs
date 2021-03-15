@@ -4,7 +4,7 @@ using System;
 namespace HW_4_Task_2.Tests
 {
     [TestFixture]
-    class ListTest : Exception
+    class ListTest
     {
         private List list = new List();
 
@@ -52,6 +52,20 @@ namespace HW_4_Task_2.Tests
 
             Assert.AreEqual(list.GetValueByIndex(1), 30);
         }
+        
+        [TestCase]
+        public void TestRemoveByValue()
+        {
+            list.InsertByIndex(10, 0);
+            list.InsertByIndex(20, 1);
+            list.InsertByIndex(30, 2);
+            
+            //Assert.Throws<DeleteElementException>(() => list.RemoveByValue(40));
+
+            list.RemoveByValue(20);
+
+            Assert.AreEqual(list.GetValueByIndex(1), 30); 
+        }
 
         [TestCase]
         public void TestChangeByIndex()
@@ -65,19 +79,6 @@ namespace HW_4_Task_2.Tests
             Assert.AreEqual(list.GetValueByIndex(1), 120);
             Assert.Throws<IndexOutOfRangeException>(() => list.ChangeByIndex(40, 4));
         }
-
-        /*[TestCase]
-        public void TestRemoveByValue()
-        {
-            list.InsertByIndex(10, 0);
-            list.InsertByIndex(20, 1);
-            list.InsertByIndex(30, 2);
-
-            list.RemoveByValue(20);
-
-            Assert.AreEqual(list.GetValueByIndex(1), 30);
-            Assert.Throws<DeleteElementException>(() => list.RemoveByValue(40));
-        }*/
     }
 }
 
