@@ -66,8 +66,8 @@ namespace HW_4_Task_2.Tests
             Assert.Throws<IndexOutOfRangeException>(() => list.ChangeByIndex(40, 4));
         }
 
-        [TestCase]
-        /*public void TestRemoveByValue()
+        /*[TestCase]
+        public void TestRemoveByValue()
         {
             list.InsertByIndex(10, 0);
             list.InsertByIndex(20, 1);
