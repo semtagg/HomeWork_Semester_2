@@ -1,4 +1,4 @@
-﻿namespace HW_2_Task_2
+﻿namespace HW_5_Task_1
 {
     public interface IStack
     {

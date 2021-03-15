@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using HW_2_Task_2;
+using HW_5_Task_1;
 using NUnit.Framework;
 
 namespace HW_5_Task_1Tests
@@ -36,5 +35,4 @@ namespace HW_5_Task_1Tests
             }
         }
     }
-  
 }

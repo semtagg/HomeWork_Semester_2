@@ -1,20 +1,11 @@
 ﻿using System;
 
-namespace HW_2_Task_2
+namespace HW_5_Task_1
 {
     class Program
     {
         static void Main(string[] args)
         {
-            if (Test.Tests())
-            {
-                Console.WriteLine("Tests were passed!");
-            }
-            else
-            {
-                Console.WriteLine("Tests weren't passed!");
-                return;
-            }
             Console.WriteLine("Введите строку в постфиксной записи: ");
             var inputLine = Console.ReadLine();
             var secondCalcElement = new Calculator(new ListStack());
