@@ -3,9 +3,8 @@ language: csharp
 mono: none
 dotnet: 5.0
 
-before_build:
-	- nuget restore HW_4_Task_2/HW_4_Task_2.sln
-build:
-	- dotnet build HW_4_Task_2/HW_4_Task_2.sln
-test_script:
-	- dotnet test HW_4_Task_2/HW_4_Task_2.sln
+env:
+    - SOLUTION: HW_4_Task_2/HW_4_Task_2.sln
+
+script:
+    - dotnet test $.NET Core
