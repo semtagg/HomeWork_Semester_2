@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using HW_4_Task_2;
 
 namespace HW_4_Task_2.Tests
 {
@@ -19,9 +20,9 @@ namespace HW_4_Task_2.Tests
         [TestCase]
         public void TestGetLastValue() // ????????????
         {
-            //list.InsertByIndex(20, 0);
+            list.InsertByIndex(20, 1);
 
-            Assert.AreEqual(list.GetLastValue(), 30);
+            Assert.AreEqual(list.GetLastValue(), 20);
         }
 
         [TestCase]
