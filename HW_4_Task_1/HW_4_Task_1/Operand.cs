@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HW_4_Task_1
 {
+    /// <summary>
+    /// Tree node for expression operands.
+    /// </summary>
     class Operand : INode
     {
         public double Value { get; set; }
@@ -14,6 +13,7 @@ namespace HW_4_Task_1
         {
             Value = value;
         }
+
 
         public double Calculate()
             => Value;

@@ -6,10 +6,17 @@ namespace HW_4_Task_1
     {
         static void Main(string[] args)
         {
-            Tree tree = new Tree();
-            var expression = "( * ( + 3 1 ) ( + 4 5 ) )";
-            tree.BuildTree(expression.Split(' ', StringSplitOptions.RemoveEmptyEntries));
-            Console.WriteLine(tree.Calculate());
+            var tree = new Tree();
+            var expression = "( * ( + 1 ( - 5 3 ) ( / 4 2 )".Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            try
+            {
+                tree.Build(expression);
+            }
+            catch (CorrectExpressionException)
+            {
+                throw new CorrectExpressionException("Incorrect form of the expression.");
+            }
+            Console.WriteLine($"Result: {tree.Calculate()}");
             tree.Print();
         }
     }

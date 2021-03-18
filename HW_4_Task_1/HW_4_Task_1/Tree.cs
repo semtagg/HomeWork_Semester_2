@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HW_4_Task_1
+﻿namespace HW_4_Task_1
 {
+    /// <summary>
+    /// Data structure used to store the arithmetic tree.
+    /// </summary>
     public class Tree
     {
         private INode root;
         private int cursor;
-        public void BuildTree(string[] expression)
+
+        /// <summary>
+        /// Builds an arithmetic tree.
+        /// </summary>
+        public void Build(string[] expression)
         {
             root = BuildNode(expression, ref cursor);
         }
@@ -21,7 +22,6 @@ namespace HW_4_Task_1
             while (!IsOperator(expression[cursor]))
             {   
                 int value;
-            
                 if (int.TryParse(expression[cursor], out value))
                 {
                     cursor++;
@@ -51,9 +51,16 @@ namespace HW_4_Task_1
         private bool IsOperator(string element)
             => (element == "+") || (element == "-") || (element == "*") || (element == "/") ? true : false;
 
+        /// <summary>
+        /// Calculates the result of the expression.
+        /// </summary>
+        /// <returns>Result.</returns>
         public double Calculate()
             => root.Calculate();
 
+        /// <summary>
+        /// Prints the expression.
+        /// </summary>
         public void Print()
             => root.Print();
     }

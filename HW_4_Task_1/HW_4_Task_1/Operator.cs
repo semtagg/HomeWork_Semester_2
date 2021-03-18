@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HW_4_Task_1
 {
+    /// <summary>
+    /// Tree node for expression operators.
+    /// </summary>
     class Operator : INode
     {
         public string Operation { get; set; }
