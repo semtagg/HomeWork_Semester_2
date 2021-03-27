@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HW_3_Task_1
 {
-    class BTree
+    public class BTree
     {
         private int minimumDegree;
         private Node root;
@@ -53,8 +51,6 @@ namespace HW_3_Task_1
                 leftPart.IsLeaf = false;
                 rightPart.IsLeaf = false;
             }
-
-
             for (int i = 0; i < minimumDegree; i++)
             {
                 if (node.IsLeaf)
@@ -80,16 +76,11 @@ namespace HW_3_Task_1
                     rightPart.Subnodes[i] = node.Subnodes[minimumDegree + i];
                 }
             }
-
             var root = new Node(minimumDegree, false);
-            
             root.KeysCount = 1;
-
             root.KeysValues[0] = node.KeysValues[minimumDegree - 1];
-
             root.Subnodes[0] = leftPart;
             root.Subnodes[1] = rightPart;
-
             node = root;
         }
 
@@ -97,7 +88,6 @@ namespace HW_3_Task_1
         {
             var leftPart = new Node(minimumDegree, isLeaf);
             var rightPart = new Node(minimumDegree, isLeaf);
-
             for (int i = 0; i < minimumDegree; i++)
             {
                 if (i < minimumDegree - 1)
@@ -107,15 +97,11 @@ namespace HW_3_Task_1
                     rightPart.KeysValues[i] = (node.Subnodes[index]).KeysValues[minimumDegree + i];
                     rightPart.KeysCount++;
                 }
-                
                 leftPart.Subnodes[i] = (node.Subnodes[index]).Subnodes[i];
                 rightPart.Subnodes[i] = (node.Subnodes[index]).Subnodes[minimumDegree + i];
             }
-
             node.KeysCount++;
-
             node.KeysValues[index] = (node.Subnodes[index]).KeysValues[minimumDegree - 1];
-
             node.Subnodes[index] = leftPart;
             node.Subnodes[index + 1] = rightPart;
         }
@@ -126,7 +112,7 @@ namespace HW_3_Task_1
             {
                 for (int i = 0; i < node.KeysCount; i++)
                 {
-                    if (KeysCompare(node.KeysValues[i].Key, keyValue.key) >= 0) // = ??
+                    if (KeysCompare(node.KeysValues[i].Key, keyValue.key) > 0)
                     {
                         for (int j = node.KeysCount; j > i; j--)
                         {
@@ -148,7 +134,7 @@ namespace HW_3_Task_1
             {
                 for (int i = 0; i < node.KeysCount; i++)
                 {
-                    if (KeysCompare(node.KeysValues[i].Key, keyValue.key) >= 0) // = ??
+                    if (KeysCompare(node.KeysValues[i].Key, keyValue.key) > 0)
                     {
                         if ((node.Subnodes[i]).KeysCount == 2 * minimumDegree - 1)
                         {
@@ -186,7 +172,7 @@ namespace HW_3_Task_1
             }
         }
 
-        private void InsertInTree((string key, string value) keyValue, ref Node root) // изменять равные ключи ??
+        private void InsertInTree((string key, string value) keyValue, ref Node root)
         {
             if (RootIsEmpty())
             {
@@ -209,6 +195,110 @@ namespace HW_3_Task_1
         public void Insert(string key, string value)
         {
             InsertInTree((key, value), ref root);
+        }
+
+        private bool TryFindKey(string key, Node node)
+        {
+            if (node.IsLeaf)
+            {
+                for (int i = 0; i < node.KeysCount; i++)
+                {
+                    if (KeysCompare(node.KeysValues[i].Key, key) == 0)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else
+            {
+                for (int i = 0; i < node.KeysCount; i++)
+                {
+                    if (KeysCompare(node.KeysValues[i].Key, key) == 0)
+                    {
+                        return true;
+                    }
+                    if (KeysCompare(node.KeysValues[i].Key, key) > 0)
+                    {
+                        return TryFindKey(key, node.Subnodes[i]);
+                    }
+                }
+                return TryFindKey(key, node.Subnodes[node.KeysCount]);
+            }
+        }
+
+        public bool CheckKey(string key)
+        {
+            if (RootIsEmpty())
+            {
+                throw new NullReferenceException("Root is empty.");
+            }
+            else
+            {
+                return TryFindKey(key, root);
+            }
+        }
+
+        private string GetValueByIndex(string key, Node node)
+        {
+            if (node.IsLeaf)
+            {
+                for (int i = 0; i < node.KeysCount; i++)
+                {
+                    if (KeysCompare(node.KeysValues[i].Key, key) == 0)
+                    {
+                        return node.KeysValues[i].Value;
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                for (int i = 0; i < node.KeysCount; i++)
+                {
+                    if (KeysCompare(node.KeysValues[i].Key, key) == 0)
+                    {
+                        return node.KeysValues[i].Value;
+                    }
+                    if (KeysCompare(node.KeysValues[i].Key, key) > 0)
+                    {
+                        return GetValueByIndex(key, node.Subnodes[i]);
+                    }
+                }
+                return GetValueByIndex(key, node.Subnodes[node.KeysCount]);
+            }
+        }
+
+        public string GetValue(string key)
+        {
+            if (RootIsEmpty())
+            {
+                throw new NullReferenceException("Root is empty");
+            }
+            else if (CheckKey(key))
+            {
+                return GetValueByIndex(key, root);
+            }
+            else
+            {
+                throw new ArgumentNullException("Key not found.");
+            }
+        }
+
+        public void Remove(string key)
+        {
+            if (RootIsEmpty())
+            {
+                throw new NullReferenceException("Root is empty");
+            }
+            else if (CheckKey(key))
+            {
+                throw new ArgumentNullException("Key not found.");
+            }
+            else
+            {
+
+            }
         }
     }
 }
