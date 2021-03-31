@@ -7,26 +7,53 @@ namespace HW_3_Task_1
         static void Main(string[] args)
         {
             var tree = new BTree(2);
-            tree.Insert("1", "1");
-            tree.Insert("2", "2");
-            tree.Insert("3", "3");
-            tree.Insert("4", "4");
-            tree.Insert("22", "5");
-            tree.Insert("30", "6");
-            tree.Insert("31", "7");
-            tree.Insert("32", "8");
-            tree.Insert("3", "9");
-            tree.Insert("4", "10");
-            tree.Insert("5", "11");
-            tree.Insert("6", "12");
-            tree.Insert("7", "13");
-            tree.Insert("8", "14");
-            tree.Insert("23", "15");
-            tree.Insert("24", "16");
-            tree.Insert("25", "17");
-            tree.Insert("26", "18");
-            tree.Insert("28", "19");
-            tree.Insert("27", "20");
+            tree.Insert("1", "a");
+            tree.Insert("10", "a");
+            tree.Insert("20", "a");
+            tree.Insert("2", "a");
+            tree.Insert("3", "a");
+            tree.Insert("4", "a");
+            tree.Insert("5", "a");
+            tree.Insert("6", "a");
+            tree.Insert("7", "a");
+            tree.Insert("8", "a");
+            
+            tree.Remove("1");
+            tree.Remove("5");
+            tree.Remove("2");
+            tree.Remove("20");
+            tree.Remove("10");
+            tree.Remove("3");
+            tree.Remove("7");
+            tree.Remove("4");
+            tree.Remove("8");
+            tree.Remove("6");
+           /* tree.Insert("1", "0");
+            tree.Insert("2", "0");
+            tree.Insert("20", "0");
+            tree.Insert("21", "0");
+            tree.Insert("22", "0");
+
+            tree.Insert("30", "0");
+            tree.Insert("31", "0");
+            tree.Insert("32", "0");
+
+            tree.Insert("3", "0");
+            tree.Insert("4", "0");
+            tree.Insert("5", "0");
+
+            tree.Insert("6", "0");
+            tree.Insert("7", "0");
+            tree.Insert("8", "6");
+
+            tree.Insert("23", "3");
+            tree.Insert("24", "0");
+            tree.Insert("25", "0");
+            tree.Insert("26", "0");
+            tree.Insert("28", "0");
+            tree.Insert("27", "1");
+
+            tree.CheckKey("32");
 
             Console.WriteLine(tree.CheckKey("1"));
             Console.WriteLine(tree.CheckKey("2"));
@@ -66,7 +93,7 @@ namespace HW_3_Task_1
             Console.WriteLine(tree.GetValue("25"));
             Console.WriteLine(tree.GetValue("26"));
             Console.WriteLine(tree.GetValue("28"));
-            Console.WriteLine(tree.GetValue("27"));
+            Console.WriteLine(tree.GetValue("27"));*/
 
         }
     }
