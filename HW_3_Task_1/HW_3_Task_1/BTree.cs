@@ -36,6 +36,18 @@ namespace HW_3_Task_1
             public Node[] Subnodes { get; set; }
 
             public (string Key, string Value)[] Data { get; set; }
+
+            public int Find(string key)
+            {
+                for (int i = 0; i < KeysCount; i++)
+                {
+                    if (Data[i].Key == key)
+                    {
+                        return i;
+                    }
+                }
+                return -1;
+            }
         }
 
         private bool RootIsEmpty()
@@ -318,13 +330,13 @@ namespace HW_3_Task_1
                 count = (node.Subnodes[0]).KeysCount;
                 (node.Subnodes[0]).Data[count] = node.Data[0];
 
-                for (int i = count + 1; i < 2 * count + 1; i++)
+                for (int i = count + 1; i < count + 1 + (node.Subnodes[1]).KeysCount; i++)
                 {
                     (node.Subnodes[0]).Data[i] = (node.Subnodes[1]).Data[i - count - 1];
                     (node.Subnodes[0]).Subnodes[i] = (node.Subnodes[1]).Subnodes[i - count - 1];
                 }
-                (node.Subnodes[0]).Subnodes[2 * count + 1] = (node.Subnodes[1]).Subnodes[count];
-                (node.Subnodes[0]).KeysCount = 2 * count + 1;
+                (node.Subnodes[0]).Subnodes[count + 1 + (node.Subnodes[1]).KeysCount] = (node.Subnodes[1]).Subnodes[(node.Subnodes[1]).KeysCount];
+                (node.Subnodes[0]).KeysCount = count + 1 + (node.Subnodes[1]).KeysCount;
                 node = node.Subnodes[0];
             }
             else
@@ -407,75 +419,113 @@ namespace HW_3_Task_1
             }
         }
 
+        private void Rebalancing(int index, ref Node node)
+        {
+            if (node.Subnodes[index].KeysCount < minimumDegree)
+            {
+                if (root == node && node.KeysCount == 1)
+                {
+                    if (index == 0)
+                    {
+                        if (node.Subnodes[index + 1].KeysCount < minimumDegree)
+                        {
+                            NodeMerge(index, ref node);
+                            height--;
+                            return;
+                        }
+                        else
+                        {
+                            NodeSwitch(index, ref node, false);
+                            return;
+                        }
+                    }
+                    else if (index == node.KeysCount)
+                    {
+                        if (node.Subnodes[index - 1].KeysCount < minimumDegree)
+                        {
+                            NodeMerge(index - 1, ref node);
+                            height--;
+                            return;
+                        }
+                        else
+                        {
+                            NodeSwitch(index, ref node, true);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (index == 0)
+                    {
+                        if (node.Subnodes[index + 1].KeysCount < minimumDegree)
+                        {
+                            NodeMerge(index, ref node);
+                            return;
+                        }
+                        else
+                        {
+                            NodeSwitch(index, ref node, false);
+                            return;
+                        }
+                    }
+                    else if (index == node.KeysCount)
+                    {
+                        if (node.Subnodes[index - 1].KeysCount < minimumDegree)
+                        {
+                            NodeMerge(index - 1, ref node);
+                            return;
+                        }
+                        else
+                        {
+                            NodeSwitch(index, ref node, true);
+                            return;
+                        }
+                    }
+                    else if ((node.Subnodes[index - 1].KeysCount < minimumDegree) && (node.Subnodes[index + 1].KeysCount < minimumDegree))
+                    {
+                        NodeMerge(index, ref node);
+                        return;
+                    }
+                    else
+                    {
+                        if (node.Subnodes[index - 1].KeysCount >= minimumDegree)
+                        {
+                            NodeSwitch(index, ref node, true);
+                            return;
+                        }
+                        else
+                        {
+                            NodeSwitch(index, ref node, false);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
         private void RemoveFromLeaf(string key, ref Node node, int height)
         {
             int index;
-            if (node == root && node.IsLeaf)
+            if (node == root && root.IsLeaf)
             {
-                RemoveFromRootrOrNormalNode(key, ref root);
-                if (root.KeysCount == 0)
-                {
-                    root = null;
-                }
-                this.height = 1;
+                RemoveFromRootrOrNormalNode(key, ref node);
                 return;
             }
             if (height != 2)
             {
                 index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0) //  ?
+                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
                 {
                     index++;
                 }
-                if (node.Subnodes[index].KeysCount == 1)
-                {
-                    if (index == 0)
-                    {
-                        if (node.Subnodes[1].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index, ref node);
-                            if (node == root)
-                            {
-                                height--;
-                                this.height--;
-                            }
-                            RemoveFromLeaf(key, ref node, height);
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, false);
-                            RemoveFromLeaf(key, ref node, height);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        if (node.Subnodes[0].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index, ref node);
-                            if (node == root)
-                            {
-                                height--;
-                                this.height--;
-                            }
-                            RemoveFromLeaf(key, ref node, height);
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, false);
-                            RemoveFromLeaf(key, ref node, height);
-                            return;
-                        }
-                    }
-                }
                 RemoveFromLeaf(key, ref node.Subnodes[index], height - 1);
+                Rebalancing(index, ref node);
             }
             else
             {
                 index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0) //  с последним вопрос
+                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
                 {
                     index++;
                 }
@@ -538,6 +588,11 @@ namespace HW_3_Task_1
             }
         }
 
+        private void RemoveFromNode(string key, ref Node root, int height)
+        {
+
+        }
+
         public void Remove(string key)
         {
             if (RootIsEmpty())
@@ -565,7 +620,7 @@ namespace HW_3_Task_1
                 }
                 else
                 {
-
+                    RemoveFromNode(key, ref root, height);
                 }
             }
         }

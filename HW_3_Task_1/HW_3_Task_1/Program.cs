@@ -7,27 +7,21 @@ namespace HW_3_Task_1
         static void Main(string[] args)
         {
             var tree = new BTree(2);
-            tree.Insert("1", "a");
-            tree.Insert("10", "a");
-            tree.Insert("20", "a");
-            tree.Insert("2", "a");
-            tree.Insert("3", "a");
-            tree.Insert("4", "a");
-            tree.Insert("5", "a");
-            tree.Insert("6", "a");
-            tree.Insert("7", "a");
-            tree.Insert("8", "a");
-            
+            tree.Insert("1", "0");
+            tree.Insert("2", "0");
+            tree.Insert("3", "0");
+            tree.Insert("4", "0");
+            tree.Insert("5", "0");
+            tree.Insert("6", "0");
+            tree.Insert("7", "0");
+            tree.Insert("8", "0");
+            tree.Insert("9", "0");
+
             tree.Remove("1");
             tree.Remove("5");
             tree.Remove("2");
-            tree.Remove("20");
-            tree.Remove("10");
             tree.Remove("3");
-            tree.Remove("7");
             tree.Remove("4");
-            tree.Remove("8");
-            tree.Remove("6");
            /* tree.Insert("1", "0");
             tree.Insert("2", "0");
             tree.Insert("20", "0");
