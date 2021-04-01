@@ -588,9 +588,76 @@ namespace HW_3_Task_1
             }
         }
 
-        private void RemoveFromNode(string key, ref Node root, int height)
+        private (string, string) GetSuccessor(ref Node node)
         {
+            if (!node.IsLeaf)
+            {
+                return GetPredecessor(ref node.Subnodes[0]);
+            }
+            else
+            {
+                if (node.KeysCount < minimumDegree)
+                {
+                    return (null, null);
+                }
+                else
+                {
+                    var element = node.Data[0];
+                    for (int i = 0; i < node.KeysCount - 1; i++)
+                    {
+                        node.Data[i] = node.Data[i + 1];
+                    }
+                    node.Data[node.KeysCount - 1] = (null, null);
+                    node.KeysCount--;
+                    return element;
+                }
+            }
+        }
 
+        private (string,string) GetPredecessor(ref Node node)
+        {
+            if (!node.IsLeaf)
+            {
+                return GetPredecessor(ref node.Subnodes[node.KeysCount]);
+            }
+            else
+            {
+                if (node.KeysCount < minimumDegree)
+                {
+                    return (null, null);
+                }
+                else
+                {
+                    var element = node.Data[node.KeysCount - 1];
+                    node.Data[node.KeysCount - 1] = (null, null);
+                    node.KeysCount--;
+                    return element;
+                }
+            }
+        }
+
+        private void RemoveFromNode(string key, ref Node node, int height)
+        {
+            int index;
+            if (node == root && root.IsLeaf)
+            {
+                RemoveFromRootrOrNormalNode(key, ref node);
+                return;
+            }
+            if (height != 2)
+            {
+                index = 0;
+                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
+                {
+                    index++;
+                }
+                RemoveFromLeaf(key, ref node.Subnodes[index], height - 1);
+                Rebalancing(index, ref node);
+            }
+            else
+            {
+                
+            }
         }
 
         public void Remove(string key)
