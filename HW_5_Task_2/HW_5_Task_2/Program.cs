@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace HW_5_Task_2
 {
@@ -6,7 +7,16 @@ namespace HW_5_Task_2
     {
         static void Main(string[] args)
         {
-            FilesManager.WriteToFile("routers.txt");
+            try
+            {
+                FilesManager.WriteToFile(args[0], args[1]);
+            }
+            catch (NetworkIsNotConnectedException ex)
+            {
+                var errorWriter = Console.Error;
+                errorWriter.WriteLine(ex.Message);
+                return;
+            }
         }
     }
 }

@@ -1,30 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HW_5_Task_2
 {
     class Algorithm
     {
-		private static int MinKey(int[] key, bool[] set, int verticesCount)
-		{
-			int min = int.MaxValue, minIndex = 0;
-
-			for (int v = 0; v < verticesCount; ++v)
+		private static (int[], bool[]) InitKeyAndSet(int verticesCount)
+        {
+			var key = new int[verticesCount];
+			var set = new bool[verticesCount];
+			for (int i = 0; i < verticesCount; i++)
 			{
-				if (set[v] == false && key[v] < min)
-				{
-					min = key[v];
-					minIndex = v;
-				}
+				key[i] = int.MinValue;
+				set[i] = false;
 			}
-
-			return minIndex;
+			return (key, set);
 		}
 
-		private static int[,] CreateGraph(int[] parent, int[,] graph, int verticesCount)
+		private static int MaxKey(int[] key, bool[] set, int verticesCount)
 		{
-			var result = new int[graph.GetUpperBound(0) + 1, graph.GetUpperBound(0) + 1];
+			var max = int.MinValue;
+			int maxIndex = 0;
+			for (int i = 0; i < verticesCount; ++i)
+			{
+				if (set[i] == false && key[i] > max)
+				{
+					max = key[i];
+					maxIndex = i;
+				}
+			}
+			return maxIndex;
+		}
+
+		private static int[,] CreateGraph(int[] parent, int[,] graph)
+		{
+			var verticesCount = graph.GetUpperBound(0) + 1;
+			var result = new int[verticesCount, verticesCount];
 			for (int i = 1; i < verticesCount; ++i)
             {
 				result[parent[i], i] = graph[parent[i], i];
@@ -33,38 +43,27 @@ namespace HW_5_Task_2
 			return result;
 		}
 
-		public static int[,] Prim(int[,] graph) // тут мы ищем мин - нужно макс
+		public static int[,] Prim(int[,] graph)
 		{
-			int verticesCount = graph.GetUpperBound(0) + 1;
-			int[] parent = new int[verticesCount];
-			int[] key = new int[verticesCount];
-			bool[] mstSet = new bool[verticesCount];
-
-			for (int i = 0; i < verticesCount; ++i)
-			{
-				key[i] = int.MaxValue;
-				mstSet[i] = false;
-			}
-
+			var verticesCount = graph.GetUpperBound(0) + 1;
+			var parent = new int[verticesCount];
+			(var key, var set) = InitKeyAndSet(verticesCount);
 			key[0] = 0;
 			parent[0] = -1;
-
-			for (int count = 0; count < verticesCount - 1; ++count)
+			for (int i = 0; i < verticesCount - 1; i++)
 			{
-				int u = MinKey(key, mstSet, verticesCount);
-				mstSet[u] = true;
-
-				for (int v = 0; v < verticesCount; ++v)
+				var currentMaxKey = MaxKey(key, set, verticesCount);
+				set[currentMaxKey] = true;
+				for (int j = 0; j < verticesCount; ++j)
 				{
-					if (Convert.ToBoolean(graph[u, v]) && mstSet[v] == false && graph[u, v] < key[v])
+					if (graph[currentMaxKey, j] != int.MinValue && set[j] == false && graph[currentMaxKey, j] > key[j])
 					{
-						parent[v] = u;
-						key[v] = graph[u, v];
+						parent[j] = currentMaxKey;
+						key[j] = graph[currentMaxKey, j];
 					}
 				}
 			}
-
-			return CreateGraph(parent, graph, verticesCount);
+			return CreateGraph(parent, graph);
 		}
 	}
 }
