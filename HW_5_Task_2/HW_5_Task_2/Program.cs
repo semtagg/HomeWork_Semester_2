@@ -9,7 +9,7 @@ namespace HW_5_Task_2
         {
             try
             {
-                FilesManager.WriteToFile(args[0], args[1]);
+                FilesManager.GetOptimalNetwork(args[0], args[1]);
             }
             catch (NetworkIsNotConnectedException ex)
             {

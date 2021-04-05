@@ -2,7 +2,10 @@
 
 namespace HW_5_Task_2
 {
-    class Algorithm
+	/// <summary>
+	/// A class containing changed Prim's algorithm.
+	/// </summary>
+	public static class Algorithm
     {
 		private static (int[], bool[]) InitKeyAndSet(int verticesCount)
         {
@@ -31,10 +34,68 @@ namespace HW_5_Task_2
 			return maxIndex;
 		}
 
+		private static bool CheckGraph(int[,] graph)
+		{
+			var size = graph.GetUpperBound(0) + 1;
+			var vertices = new int[size];
+			var flag = false;
+			int index = 0;
+			vertices[0] = 1;
+			while (!flag)
+			{
+				flag = true;
+				for (int i = 0; i < size; i++)
+				{
+					if (vertices[i] == 1)
+					{
+						vertices[i] = 2;
+						index = i;
+						break;
+					}
+				}
+				for (int j = 0; j < size; j++)
+				{
+					if (graph[index, j] != int.MinValue && vertices[j] == 0)
+					{
+						vertices[j] = 1;
+					}
+				}
+				for (int k = 0; k < size; k++)
+				{
+					if (vertices[k] == 1)
+					{
+						flag = false;
+					}
+				}
+			}
+			int result = 0;
+			for (int i = 0; i < size; i++)
+			{
+				if (vertices[i] == 0)
+				{
+					result++;
+				}
+			}
+			return result == 0 ? true : false;
+		}
+
+		private static int[,] InitGraph(int size)
+		{
+			var graph = new int[size, size];
+			for (int i = 0; i < size; i++)
+			{
+				for (int j = 0; j < size; j++)
+				{
+					graph[i, j] = int.MinValue;
+				}
+			}
+			return graph;
+		}
+
 		private static int[,] CreateGraph(int[] parent, int[,] graph)
 		{
 			var verticesCount = graph.GetUpperBound(0) + 1;
-			var result = new int[verticesCount, verticesCount];
+			var result = InitGraph(verticesCount);
 			for (int i = 1; i < verticesCount; ++i)
             {
 				result[parent[i], i] = graph[parent[i], i];
@@ -43,8 +104,17 @@ namespace HW_5_Task_2
 			return result;
 		}
 
-		public static int[,] Prim(int[,] graph)
+		/// <summary>
+		/// Changed Prim's algorithm.
+		/// </summary>
+		/// <param name="graph">Connected graph.</param>
+		/// <returns>The graph that results from Prim's algorithm.</returns>
+		public static int[,] ChangedPrim(int[,] graph)
 		{
+			if (!CheckGraph(graph))
+			{
+				throw new GraphIsNotConnectedException();
+			}
 			var verticesCount = graph.GetUpperBound(0) + 1;
 			var parent = new int[verticesCount];
 			(var key, var set) = InitKeyAndSet(verticesCount);

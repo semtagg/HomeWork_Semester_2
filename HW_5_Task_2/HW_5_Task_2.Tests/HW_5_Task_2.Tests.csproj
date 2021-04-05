@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HW_5_Task_2\HW_5_Task_2.csproj" />
+  </ItemGroup>
+
 </Project>

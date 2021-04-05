@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 namespace HW_5_Task_2
 {
-    class FilesManager
+    /// <summary>
+    /// A class that contains methods for working with files and for finding optimal network by them.
+    /// </summary>
+    public static class FilesManager
     {
         private static string[] separatingStrings = { " ", ":", "(", ")", ".", "," };
 
@@ -44,51 +46,6 @@ namespace HW_5_Task_2
             return maxSize;
         }
 
-        private static bool CheckGraph(int[,] graph)
-        {
-            var size = graph.GetUpperBound(0) + 1;
-            var vertices = new int[size];
-            var flag = false;
-            int index = 0;
-            vertices[0] = 1;
-            while (!flag)
-            {
-                flag = true;
-                for (int i = 0; i < size; i++)
-                {
-                    if(vertices[i] == 1)
-                    {
-                        vertices[i] = 2;
-                        index = i;
-                        break;
-                    }
-                }
-                for (int j = 0; j < size; j++)
-                {
-                    if (graph[index, j] != int.MinValue && vertices[j] == 0)
-                    {
-                        vertices[j] = 1;
-                    }
-                }
-                for (int k = 0; k < size; k++)
-                {
-                    if (vertices[k] == 1)
-                    {
-                        flag = false;
-                    }
-                }
-            }
-            int result = 0;
-            for (int i = 0; i < size; i++)
-            {
-                if (vertices[i] == 0)
-                {
-                    result++;
-                }
-            }
-            return result == 0 ? true : false;
-        }
-
         private static int[,] ReadFromFile(string path)
         {
             var maxSize = GetMaxSize(path);
@@ -103,29 +60,30 @@ namespace HW_5_Task_2
                     graph[int.Parse(currentLine[j]) - 1, int.Parse(currentLine[0]) - 1] = int.Parse(currentLine[j + 1]);
                 }
             }
-            if(!CheckGraph(graph))
+            try
+            {
+                return Algorithm.ChangedPrim(graph);
+            }
+            catch (GraphIsNotConnectedException)
             {
                 throw new NetworkIsNotConnectedException();
             }
-            return Algorithm.Prim(graph);
         }
 
-        public static void WriteToFile(string inputPath, string outputPath)
+        private static void WriteToFile(string inputPath, string outputPath)
         {
             var graph = ReadFromFile(inputPath);
             using var writeFile = new StreamWriter(outputPath, false, Encoding.Default);
-
             for (int i = 0; i < graph.GetUpperBound(0) + 1; i++)
             {
                 string line = $"{i + 1}: ";
                 for (int j = 0; j < graph.GetUpperBound(0) + 1; j++)
                 {
-                    
-                    if (graph[i, j] != 0 && i!=j && graph[i, j] != int.MaxValue)
+                    if (graph[i,j] != int.MinValue)
                     {
                         line += $"{j + 1} ({graph[i, j]}), ";
-                        graph[i, j] = int.MaxValue;
-                        graph[j, i] = int.MaxValue;
+                        graph[i, j] = int.MinValue;
+                        graph[j, i] = int.MinValue;
                     }
                 }
                 if (line.Length != 3)
@@ -133,6 +91,16 @@ namespace HW_5_Task_2
                     writeFile.WriteLine(line[..(line.Length - 2)]);
                 }
             }
+        }
+
+        /// <summary>
+        /// Method that finds the optimal network.
+        /// </summary>
+        /// <param name="inputPath">The path to the input file.</param>
+        /// <param name="outputPath">The path to the output file.</param>
+        public static void GetOptimalNetwork(string inputPath, string outputPath)
+        {
+            WriteToFile(inputPath, outputPath);
         }
     }
 }

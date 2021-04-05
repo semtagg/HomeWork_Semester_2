@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace HW_5_Task_2
 {
+    /// <summary>
+    /// Exception which used if the network is unconnected.
+    /// </summary>
     [Serializable]
     public class NetworkIsNotConnectedException : Exception
     {
