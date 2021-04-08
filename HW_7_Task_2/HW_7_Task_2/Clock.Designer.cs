@@ -39,14 +39,15 @@ namespace HW_7_Task_2
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
-            this.timer1.Tick += new EventHandler(this.Invalidate);
-
+            this.timer1.Tick += new System.EventHandler(this.Invalidate);
             // 
             // Clock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(482, 453);
+            this.MinimumSize = new System.Drawing.Size(300, 300);
             this.Name = "Clock";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Clock";
