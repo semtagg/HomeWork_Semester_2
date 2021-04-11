@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HW_7_Task_1
 {
@@ -59,17 +55,33 @@ namespace HW_7_Task_1
                         }
                     }
                 }
-                else
+                else if (operands[0] == null && symbol == "-")
                 {
-                    if (operation == null)
+                    operands[0] += symbol;
+                    result += symbol;
+                }
+                else if (operands[0] != null && operands[0] != "-")
+                {
+                    if(symbol != "=")
                     {
-                        result += symbol;
-                        operation = symbol;
+                        if (operation == null)
+                        {
+                            result += symbol;
+                            operation = symbol;
+                        }
+                        else
+                        {
+                            result = result[..(result.Length - 1)] + symbol;
+                            operation = symbol;
+                        }
                     }
                     else
                     {
-                        result = result[..(result.Length - 1)] + symbol;
-                        operation = symbol;
+                        if (operation != null)
+                        {
+                            result = result[..(result.Length - 1)];
+                            operation = null;
+                        }
                     }
                 }
             }
@@ -94,23 +106,23 @@ namespace HW_7_Task_1
             switch (operation)
             {
                 case "+":
-                    currentResult = (int.Parse(operands[0]) + int.Parse(operands[1])).ToString();
+                    currentResult = (double.Parse(operands[0]) + double.Parse(operands[1])).ToString();
                     Default();
                     break;
                 case "-":
-                    currentResult = (int.Parse(operands[0]) - int.Parse(operands[1])).ToString();
+                    currentResult = (double.Parse(operands[0]) - double.Parse(operands[1])).ToString();
                     Default();
                     break;
                 case "*":
-                    currentResult = (int.Parse(operands[0]) * int.Parse(operands[1])).ToString();
+                    currentResult = (double.Parse(operands[0]) * double.Parse(operands[1])).ToString();
                     Default();
                     break;
                 case "/":
-                    if (int.Parse(operands[1]) == 0)
+                    if (Math.Abs(double.Parse(operands[1])) < 10e-6)
                     {
                         throw new DivideByZeroException();
                     }
-                    currentResult = (int.Parse(operands[0]) / int.Parse(operands[1])).ToString();
+                    currentResult = (double.Parse(operands[0]) / double.Parse(operands[1])).ToString();
                     Default();
                     break;
             }
