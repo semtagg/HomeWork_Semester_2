@@ -23,13 +23,25 @@ namespace HW_7_Task_1
 
         private void buttonClick(object sender, EventArgs e)
         {
-            result = calc.TryCalculate((sender as Button).Text);
-            textBox.Text = result;
+            try
+            {
+                result = calc.TryCalculate((sender as Button).Text);            
+                textBox.Text = result;
+            }
+            catch (DivideByZeroException)
+            {
+                result = "";
+                calc.Default();
+                textBox.Clear();
+                textBox.Text = "Делить на нуль нельзя!";
+            }
+            
         }
 
         private void button16Click(object sender, EventArgs e)
         {
             result = "";
+            calc.Default();
             textBox.Clear();
         }
     }

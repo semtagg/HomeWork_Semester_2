@@ -27,13 +27,36 @@ namespace HW_7_Task_1
             {
                 if (operands[0] != null && operands[1] != null)
                 {
-                    try
+                    if (symbol == "=")
                     {
-                        result = Calculate();
+                        try
+                        {
+                            result = Calculate();
+                            operands[0] = result;
+                            operands[1] = null;
+                            operation = null;
+                        }
+                        catch (Exception)
+                        {
+                            Default();
+                            throw new DivideByZeroException();
+                        }
                     }
-                    catch (Exception)
+                    else
                     {
-                        throw new DivideByZeroException();
+                        try
+                        {
+                            result = Calculate();
+                            operands[0] = result;
+                            operands[1] = null;
+                            operation = symbol;
+                            result += symbol;
+                        }
+                        catch (Exception)
+                        {
+                            Default();
+                            throw new DivideByZeroException();
+                        }
                     }
                 }
                 else
@@ -45,13 +68,14 @@ namespace HW_7_Task_1
                     }
                     else
                     {
-
+                        result = result[..(result.Length - 1)] + symbol;
+                        operation = symbol;
                     }
                 }
             }
             else
             {
-                if (operands[0] == null)
+                if (operation == null)
                 {
                     operands[0] += symbol;
                 }
@@ -93,9 +117,12 @@ namespace HW_7_Task_1
             return currentResult;
         }
 
-        private void Default()
+        public void Default()
         {
-            operation = operands[0] = operands[1] = null;
+            result = null;
+            operation = null;
+            operands[0] = null;
+            operands[1] = null;
         }
     }
 }
