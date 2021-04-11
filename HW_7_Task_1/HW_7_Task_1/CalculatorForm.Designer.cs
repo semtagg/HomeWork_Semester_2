@@ -57,6 +57,7 @@ namespace HW_7_Task_1
             this.button13.TabIndex = 46;
             this.button13.Text = "/";
             this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.buttonClick);
             // 
             // button12
             // 
@@ -67,6 +68,7 @@ namespace HW_7_Task_1
             this.button12.TabIndex = 45;
             this.button12.Text = "*";
             this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.buttonClick);
             // 
             // button11
             // 
@@ -77,6 +79,7 @@ namespace HW_7_Task_1
             this.button11.TabIndex = 44;
             this.button11.Text = "-";
             this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.buttonClick);
             // 
             // button10
             // 
@@ -87,6 +90,7 @@ namespace HW_7_Task_1
             this.button10.TabIndex = 43;
             this.button10.Text = "+";
             this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.buttonClick);
             // 
             // button9
             // 
@@ -207,6 +211,7 @@ namespace HW_7_Task_1
             this.button15.TabIndex = 48;
             this.button15.Text = "=";
             this.button15.UseVisualStyleBackColor = true;
+            this.button15.Click += new System.EventHandler(this.buttonClick);
             // 
             // textBox
             // 
@@ -214,9 +219,9 @@ namespace HW_7_Task_1
             this.textBox.Location = new System.Drawing.Point(12, 12);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
+            this.textBox.ReadOnly = true;
             this.textBox.Size = new System.Drawing.Size(452, 176);
             this.textBox.TabIndex = 50;
-            this.textBox.ReadOnly = true;
             // 
             // button16
             // 

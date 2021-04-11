@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace HW_7_Task_1
 {
-    class Calculator
+    public class Calculator
     {
-        private static char[] operations = { '+', '-', '*', '/', '=' };
+        private static string[] operations = { "+", "-", "*", "/", "=" };
         private string[] operands;
-        private char operation;
+        private string operation;
         private string result;
 
         public Calculator()
@@ -18,10 +18,10 @@ namespace HW_7_Task_1
             operands = new string[2];
         }
 
-        private bool IsOperation(char symbol)
+        private bool IsOperation(string symbol)
             => Array.IndexOf(operations, symbol) == -1 ? false : true;
 
-        public string TryCalculate(char symbol)
+        public string TryCalculate(string symbol)
         {
             if (IsOperation(symbol))
             {
@@ -29,7 +29,7 @@ namespace HW_7_Task_1
                 {
                     try
                     {
-
+                        result = Calculate();
                     }
                     catch (Exception)
                     {
@@ -38,9 +38,10 @@ namespace HW_7_Task_1
                 }
                 else
                 {
-                    if (operation == default(char))
+                    if (operation == null)
                     {
                         result += symbol;
+                        operation = symbol;
                     }
                     else
                     {
@@ -50,29 +51,37 @@ namespace HW_7_Task_1
             }
             else
             {
-
+                if (operands[0] == null)
+                {
+                    operands[0] += symbol;
+                }
+                else
+                {
+                    operands[1] += symbol;
+                }
+                result += symbol;
             }
             return result;
         }
 
-        private string Calculate(char symbol)
+        private string Calculate()
         {
             string currentResult = "";
-            switch (symbol)
+            switch (operation)
             {
-                case '+':
+                case "+":
                     currentResult = (int.Parse(operands[0]) + int.Parse(operands[1])).ToString();
                     Default();
                     break;
-                case '-':
+                case "-":
                     currentResult = (int.Parse(operands[0]) - int.Parse(operands[1])).ToString();
                     Default();
                     break;
-                case '*':
+                case "*":
                     currentResult = (int.Parse(operands[0]) * int.Parse(operands[1])).ToString();
                     Default();
                     break;
-                case '/':
+                case "/":
                     if (int.Parse(operands[1]) == 0)
                     {
                         throw new DivideByZeroException();
@@ -86,8 +95,7 @@ namespace HW_7_Task_1
 
         private void Default()
         {
-            operation = default(char);
-            operands[0] = operands[1] = null;
+            operation = operands[0] = operands[1] = null;
         }
     }
 }
