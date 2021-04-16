@@ -17,7 +17,7 @@ namespace HW_3_Task_1
             tree.Insert("8", "0");
             tree.Insert("9", "0");
 
-            tree.Remove("1");
+            tree.Remove("2");
             tree.Remove("5");
             tree.Remove("2");
             tree.Remove("3");

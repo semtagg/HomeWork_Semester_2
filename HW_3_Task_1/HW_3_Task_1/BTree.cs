@@ -592,7 +592,7 @@ namespace HW_3_Task_1
         {
             if (!node.IsLeaf)
             {
-                return GetPredecessor(ref node.Subnodes[0]);
+                return GetSuccessor(ref node.Subnodes[0]);
             }
             else
             {
@@ -651,12 +651,34 @@ namespace HW_3_Task_1
                 {
                     index++;
                 }
-                RemoveFromLeaf(key, ref node.Subnodes[index], height - 1);
+                RemoveFromNode(key, ref node.Subnodes[index], height - 1);
                 Rebalancing(index, ref node);
             }
             else
             {
-                
+                index = 0;
+                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
+                {
+                    index++;
+                }
+                if (GetSuccessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key) + 1]) != (null,null))
+                {
+                    node.Subnodes[index].Data[node.Subnodes[index].Find(key)] = GetSuccessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key) + 1]);
+                    return;
+                }
+                else if (GetPredecessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key)]) != (null, null))
+                {
+                    node.Subnodes[index].Data[node.Subnodes[index].Find(key)] = GetPredecessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key)]);
+                    return;
+                }
+                else
+                {
+                    var currentIndex = node.Subnodes[index].Find(key);
+                    node.Subnodes[index].Data[currentIndex] = (null, null);
+                    NodeMerge(currentIndex, ref node.Subnodes[index]);
+                    Rebalancing(currentIndex, ref node.Subnodes[index]);
+                    return;
+                }
             }
         }
 
