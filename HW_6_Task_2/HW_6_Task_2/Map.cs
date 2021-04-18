@@ -1,10 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System;
-
 
 namespace HW_6_Task_2
 {
@@ -12,58 +7,67 @@ namespace HW_6_Task_2
     {
         public Map(string path)
         {
-            InitMap(path);
+            try
+            {
+                MapInitialization(path);
+            }
+            catch (PlayerNotFoundException)
+            {
+                throw new PlayerNotFoundException();
+            }
         }
 
-        private struct Player
-        {
-            public int x;
-            public int y;
-        }
+        private (int X, int Y) player;
+        private (int X, int Y) max;
+        private bool[,] mapOutline;
 
-        static private Player player = new Player(); // убрать статик
-        static private bool[,] boolMap;
-
-        private void InitMap(string path)
+        private void MapInitialization(string path)
         {
-            int j = 0;
-            string[] readText = File.ReadAllLines(path);
-            boolMap = new bool[readText[0].Length, readText.Length];
+            var j = 0;
+            var readText = File.ReadAllLines(path);
+            max = (readText[0].Length, readText.Length);
+            player = (-1, -1);
+            mapOutline = new bool[max.X, max.Y];
             foreach (string line in readText)
             {
                 for (int i = 0; i < line.Length; i++)
                 {
                     if (line[i] == '@')
                     {
-                        player.x = i;
-                        player.y = j;
+                        player.X = i;
+                        player.Y = j;
                     }
                     if (line[i] == ' ' || line[i] == '@')
                     {
-                        boolMap[i, j] = true;
+                        mapOutline[i, j] = true;
                     }
                 }
                 Console.WriteLine(line);
                 j++;
             }
-            Console.WriteLine($"X = {player.x}, Y = {player.y}.");
+            if (player == (-1, -1))
+            {
+                throw new PlayerNotFoundException();
+            }
         }
 
-        public bool TryMove((int, int) coordinates)
+        public bool TryMove((int X, int Y) coordinates)
         {
             (int x, int y) = coordinates;
-            if (x < 0 || y < 0) // проверить в boolMap[, ]
+            if (x < 0 || y < 0 || max.Y < y || max.X < x)
             {
                 throw new IndexOutOfRangeException();
             }
             else
             {
-                
-                return boolMap[x, y];
+                return mapOutline[x, y];
             }
         }
 
         public (int, int) GetCoordinates()
-            => (player.x, player.y);
+            => player;
+
+        public (int X, int Y) GetMax()
+            => max;
     }
 }
