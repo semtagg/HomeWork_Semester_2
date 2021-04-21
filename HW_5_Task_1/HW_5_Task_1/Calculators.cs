@@ -2,6 +2,9 @@
 
 namespace HW_5_Task_1
 {
+    /// <summary>
+    /// A calculator that can сalculates the value of simple expression.
+    /// </summary>
     public class Calculator
     {
         private IStack stack;
@@ -12,6 +15,11 @@ namespace HW_5_Task_1
         private string[] GetArrayOfSymbols(string inputline)
             => inputline.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
+        /// <summary>
+        /// Calculates the value of the expression.
+        /// </summary>
+        /// <param name="inputLine">An expression to calculate.</param>
+        /// <returns>Value of expression.</returns>
         public double GetResult(string inputLine)
         {
             var symbolsArray = GetArrayOfSymbols(inputLine);
