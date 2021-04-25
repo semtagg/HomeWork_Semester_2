@@ -4,7 +4,7 @@ using System.Linq;
 namespace HW_3_Task_1
 {
     /// <summary>
-    /// This implementation is not thread-safe, and user must handle thread-safety.
+    /// A class that implements a dictionary using a BTree.
     /// </summary>
     public class BTree
     {
