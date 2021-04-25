@@ -1,717 +1,345 @@
 ﻿using System;
+using System.Linq;
 
 namespace HW_3_Task_1
 {
+    /// <summary>
+    /// This implementation is not thread-safe, and user must handle thread-safety.
+    /// </summary>
     public class BTree
     {
-        private int height;
-        private int minimumDegree;
-        private Node root;
-
         public BTree(int degree)
         {
             if (degree < 2)
             {
-                throw new IndexOutOfRangeException();
+                throw new ArgumentException("BTree degree must be at least 2", "degree");
             }
 
-            minimumDegree = degree;
-            root = null;
-            height = 0;
+            Root = new Node(degree);
+            Degree = degree;
+            Height = 1;
         }
 
-        private class Node
+        public Node Root { get; private set; }
+
+        public int Degree { get; private set; }
+
+        public int Height { get; private set; }
+
+        /// <summary>
+        /// Checks if the key is in the BTree.
+        /// </summary>
+        /// <param name="key">Key being checked.</param>
+        /// <returns>True if the key is in the tree, false if it's not.</returns>
+        public bool IsContained(string key)
+            => SearchInternal(Root, key) == null ? false : true;
+
+        /// <summary>
+        /// Searches a key in the BTree, returning the entry with it and with the pointer.
+        /// </summary>
+        /// <param name="key">Key being searched.</param>
+        /// <returns>Entry for that key, null otherwise.</returns>
+        public Entry Search(string key)
+            => SearchInternal(Root, key);
+
+        /// <summary>
+        /// Attempts to change the pointer by key.
+        /// </summary>
+        /// <param name="key">Key being changed.</param>
+        /// <param name="newPointer">New pointer that changed by key.</param>
+        public void Change(string key, string newPointer)
         {
-            public Node(int degree, bool leaf)
-            {
-                IsLeaf = leaf;
-                Subnodes = new Node[2 * degree];
-                Data = new (string, string)[2 * degree - 1];
-            }
-
-            public int KeysCount { get; set; }
-
-            public bool IsLeaf { get; set; }
-
-            public Node[] Subnodes { get; set; }
-
-            public (string Key, string Value)[] Data { get; set; }
-
-            public int Find(string key)
-            {
-                for (int i = 0; i < KeysCount; i++)
-                {
-                    if (Data[i].Key == key)
-                    {
-                        return i;
-                    }
-                }
-                return -1;
-            }
-        }
-
-        private bool RootIsEmpty()
-            => root == null ? true : false;
-
-        private int KeysCompare(string firstKey, string secondKey)
-            => firstKey.Length > secondKey.Length ? 1 : (firstKey.Length < secondKey.Length ? -1 : String.Compare(firstKey, secondKey));
-
-        private void RootSplit(ref Node node)
-        {
-            var leftPart = new Node(minimumDegree, true);
-            var rightPart = new Node(minimumDegree, true);
-            if (!node.IsLeaf)
-            {
-                leftPart.IsLeaf = false;
-                rightPart.IsLeaf = false;
-            }
-            for (int i = 0; i < minimumDegree; i++)
-            {
-                if (node.IsLeaf)
-                {
-                    if (i < minimumDegree - 1)
-                    {
-                        leftPart.KeysCount++;
-                        leftPart.Data[i] = node.Data[i];
-                        rightPart.KeysCount++;
-                        rightPart.Data[i] = node.Data[minimumDegree + i];
-                    }
-                }
-                else
-                {
-                    if (i < minimumDegree - 1)
-                    {
-                        leftPart.KeysCount++;
-                        leftPart.Data[i] = node.Data[i];
-                        rightPart.KeysCount++;
-                        rightPart.Data[i] = node.Data[minimumDegree + i];
-                    }
-                    leftPart.Subnodes[i] = node.Subnodes[i];
-                    rightPart.Subnodes[i] = node.Subnodes[minimumDegree + i];
-                }
-            }
-            var root = new Node(minimumDegree, false);
-            root.KeysCount = 1;
-            root.Data[0] = node.Data[minimumDegree - 1];
-            root.Subnodes[0] = leftPart;
-            root.Subnodes[1] = rightPart;
-            node = root;
-        }
-
-        private void NodeSplit(int index, ref Node node, bool isLeaf)
-        {
-            var leftPart = new Node(minimumDegree, isLeaf);
-            var rightPart = new Node(minimumDegree, isLeaf);
-            for (int i = 0; i < minimumDegree; i++)
-            {
-                if (i < minimumDegree - 1)
-                {
-                    leftPart.Data[i] = (node.Subnodes[index]).Data[i];
-                    leftPart.KeysCount++;
-                    rightPart.Data[i] = (node.Subnodes[index]).Data[minimumDegree + i];
-                    rightPart.KeysCount++;
-                }
-                leftPart.Subnodes[i] = (node.Subnodes[index]).Subnodes[i];
-                rightPart.Subnodes[i] = (node.Subnodes[index]).Subnodes[minimumDegree + i];
-            }
-            node.KeysCount++;
-            node.Data[index] = (node.Subnodes[index]).Data[minimumDegree - 1];
-            node.Subnodes[index] = leftPart;
-            node.Subnodes[index + 1] = rightPart;
-        }
-
-        private void InsertInNode((string key, string value) keyValue, ref Node node)
-        {
-            if (node.IsLeaf)
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, keyValue.key) > 0)
-                    {
-                        for (int j = node.KeysCount; j > i; j--)
-                        {
-                            node.Data[j] = node.Data[j - 1];
-                        }
-                        node.Data[i] = keyValue;
-                        node.KeysCount++;
-                        return;
-                    }
-                    else if ((i == node.KeysCount - 1) && (KeysCompare(node.Data[i].Key, keyValue.key) < 0))
-                    {
-                        node.Data[i + 1] = keyValue;
-                        node.KeysCount++;
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, keyValue.key) > 0)
-                    {
-                        if ((node.Subnodes[i]).KeysCount == 2 * minimumDegree - 1)
-                        {
-                            for (int j = node.KeysCount; j > i; j--)
-                            {
-                                node.Data[j] = node.Data[j - 1];
-                            }
-                            node.Subnodes[node.KeysCount + 1] = node.Subnodes[node.KeysCount];
-                            NodeSplit(i, ref node, node.Subnodes[i].IsLeaf);
-                            InsertInNode(keyValue, ref node);
-                            return;
-                        }
-                        else
-                        {
-                            InsertInNode(keyValue, ref node.Subnodes[i]);
-                            return;
-                        }
-                    }
-                    else if ((i == node.KeysCount - 1) && (KeysCompare(node.Data[i].Key, keyValue.key) < 0))
-                    {
-                        if ((node.Subnodes[i + 1]).KeysCount == 2 * minimumDegree - 1)
-                        {
-                            node.Subnodes[node.KeysCount + 1] = node.Subnodes[node.KeysCount];
-                            NodeSplit(i + 1, ref node, node.Subnodes[i + 1].IsLeaf);
-                            InsertInNode(keyValue, ref node);
-                            return;
-                        }
-                        else
-                        {
-                            InsertInNode(keyValue, ref node.Subnodes[i + 1]);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void InsertInTree((string key, string value) keyValue, ref Node root)
-        {
-            if (RootIsEmpty())
-            {
-                root = new Node(minimumDegree, true);
-                root.Data[0] = keyValue;
-                root.Subnodes = null;
-                root.KeysCount++;
-            }
-            else if (root.KeysCount == (2 * minimumDegree - 1))
-            {
-                RootSplit(ref root);
-                InsertInNode(keyValue, ref root);
-            }
-            else
-            {
-                InsertInNode(keyValue, ref root);
-            }
-            if (height < TryFindKey(keyValue.key, root).Height)
-            {
-                height = TryFindKey(keyValue.key, root).Height;
-            }
-        }
-
-        public void Insert(string key, string value)
-        {
-            InsertInTree((key, value), ref root);
-        }
-
-        private (bool Status, int Height) TryFindKey(string key, Node node)
-        {
-            if (node.IsLeaf)
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, key) == 0)
-                    {
-                        return (true, 1);
-                    }
-                }
-                return (false, 0);
-            }
-            else
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, key) == 0)
-                    {
-                        return (true, 1);
-                    }
-                    if (KeysCompare(node.Data[i].Key, key) > 0)
-                    {
-                        return (TryFindKey(key, node.Subnodes[i]).Status, TryFindKey(key, node.Subnodes[i]).Height + 1);
-                    }
-                }
-                return (TryFindKey(key, node.Subnodes[node.KeysCount]).Status, TryFindKey(key, node.Subnodes[node.KeysCount]).Height + 1);
-            }
-        }
-
-        public bool CheckKey(string key)
-        {
-            if (RootIsEmpty())
-            {
-                throw new NullReferenceException("Root is empty.");
-            }
-            else
-            {
-                return TryFindKey(key, root).Status;
-            }
-        }
-
-        private string GetValueByIndex(string key, Node node)
-        {
-            if (node.IsLeaf)
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, key) == 0)
-                    {
-                        return node.Data[i].Value;
-                    }
-                }
-                return null;
-            }
-            else
-            {
-                for (int i = 0; i < node.KeysCount; i++)
-                {
-                    if (KeysCompare(node.Data[i].Key, key) == 0)
-                    {
-                        return node.Data[i].Value;
-                    }
-                    if (KeysCompare(node.Data[i].Key, key) > 0)
-                    {
-                        return GetValueByIndex(key, node.Subnodes[i]);
-                    }
-                }
-                return GetValueByIndex(key, node.Subnodes[node.KeysCount]);
-            }
-        }
-
-        public string GetValue(string key)
-        {
-            if (RootIsEmpty())
-            {
-                throw new NullReferenceException("Root is empty");
-            }
-            else if (CheckKey(key))
-            {
-                return GetValueByIndex(key, root);
-            }
-            else
+            if (!IsContained(key))
             {
                 throw new ArgumentNullException("Key not found.");
             }
+
+            SearchInternal(Root, key).Pointer = newPointer;
         }
 
-        private void RemoveFromRootrOrNormalNode(string key, ref Node root)
+        /// <summary>
+        /// Inserts a new key associated with a pointer in the BTree. This
+        /// operation splits nodes as required to keep the BTree properties.
+        /// </summary>
+        /// <param name="newKey">Key to be inserted.</param>
+        /// <param name="newPointer">Pointer to be associated with inserted key.</param>
+        public void Insert(string newKey, string newPointer)
         {
-            for (int i = 0; i < root.KeysCount; i++)
+            if (!Root.HasReachedMaxEntries)
             {
-                if (KeysCompare(root.Data[i].Key, key) == 0)
-                {
-                    for (int j = i; j < root.KeysCount - 1; j++)
-                    {
-                        var swap = root.Data[j];
-                        root.Data[j] = root.Data[j + 1];
-                        root.Data[j + 1] = swap;
-                    }
-                    root.Data[root.KeysCount - 1] = (null, null);
-                    root.KeysCount--;
-                    return;
-                }
-            }
-        }
-
-        private void NodeMerge(int index, ref Node node)
-        {
-            int count;
-            if (node == root && node.KeysCount == 1)
-            {
-                count = (node.Subnodes[0]).KeysCount;
-                (node.Subnodes[0]).Data[count] = node.Data[0];
-
-                for (int i = count + 1; i < count + 1 + (node.Subnodes[1]).KeysCount; i++)
-                {
-                    (node.Subnodes[0]).Data[i] = (node.Subnodes[1]).Data[i - count - 1];
-                    (node.Subnodes[0]).Subnodes[i] = (node.Subnodes[1]).Subnodes[i - count - 1];
-                }
-                (node.Subnodes[0]).Subnodes[count + 1 + (node.Subnodes[1]).KeysCount] = (node.Subnodes[1]).Subnodes[(node.Subnodes[1]).KeysCount];
-                (node.Subnodes[0]).KeysCount = count + 1 + (node.Subnodes[1]).KeysCount;
-                node = node.Subnodes[0];
-            }
-            else
-            {
-                count = (node.Subnodes[index]).KeysCount;
-                (node.Subnodes[index]).Data[count] = node.Data[index];
-
-                for (int i = count + 1; i < 2 * count + 1; i++)
-                {
-                    (node.Subnodes[index]).Data[i] = (node.Subnodes[index + 1]).Data[i - count - 1];
-                    (node.Subnodes[index]).Subnodes[i] = (node.Subnodes[index + 1]).Subnodes[i - count - 1];
-                }
-                (node.Subnodes[index]).Subnodes[2*count + 1] = (node.Subnodes[index + 1]).Subnodes[count];
-                (node.Subnodes[index]).KeysCount = 2 * count + 1;
-
-                node.Subnodes[index + 1] = node.Subnodes[index];
-                for (int j = index; j < node.KeysCount - 1; j++)
-                {
-                    node.Data[j] = node.Data[j + 1];
-                    node.Subnodes[j] = node.Subnodes[j + 1];
-                }
-                node.Subnodes[node.KeysCount - 1] = node.Subnodes[node.KeysCount];
-                node.Data[node.KeysCount - 1] = (null, null);
-                node.Subnodes[node.KeysCount] = null;
-                node.KeysCount--;
-            }
-        }
-
-        private void NodeSwitch(int index, ref Node node, bool isRight)
-        {
-            Node element;
-            int indexCount;
-            int rotateCount;
-            if (isRight)
-            {
-                indexCount = (node.Subnodes[index]).KeysCount;
-                rotateCount = (node.Subnodes[index - 1]).KeysCount;
-
-                element = (node.Subnodes[index - 1]).Subnodes[rotateCount];
-
-                for (int i = indexCount; i > 0; i--)
-                {
-                    (node.Subnodes[index]).Data[i] = (node.Subnodes[index]).Data[i - 1];
-                    (node.Subnodes[index]).Subnodes[i] = (node.Subnodes[index]).Subnodes[i - 1];
-                }
-                
-                (node.Subnodes[index]).Data[0] = node.Data[index - 1];
-                node.Data[index - 1] = (node.Subnodes[index - 1]).Data[rotateCount - 1];
-
-                (node.Subnodes[index]).Subnodes[0] = element;
-                (node.Subnodes[index]).KeysCount++;
-
-                (node.Subnodes[index - 1]).Subnodes[rotateCount] = null;
-                (node.Subnodes[index - 1]).Data[rotateCount - 1] = (null, null);
-                (node.Subnodes[index - 1]).KeysCount--;
-
-            }
-            else
-            {
-                indexCount = (node.Subnodes[index]).KeysCount;
-                rotateCount = (node.Subnodes[index + 1]).KeysCount;
-
-                element = (node.Subnodes[index + 1]).Subnodes[0];
-
-                (node.Subnodes[index]).Data[indexCount] = node.Data[index];
-                node.Data[index] = (node.Subnodes[index + 1]).Data[0];
-
-                for (int i = 0; i < rotateCount - 1; i++)
-                {
-                    (node.Subnodes[index + 1]).Data[i] = (node.Subnodes[index + 1]).Data[i + 1];
-                    (node.Subnodes[index + 1]).Subnodes[i] = (node.Subnodes[index + 1]).Subnodes[i + 1];
-                }
-                (node.Subnodes[index + 1]).Subnodes[rotateCount - 1] = (node.Subnodes[index + 1]).Subnodes[rotateCount];
-                (node.Subnodes[index]).Subnodes[indexCount + 1] = element;
-                (node.Subnodes[index]).KeysCount++;
-
-                (node.Subnodes[index + 1]).Subnodes[rotateCount] = null;
-                (node.Subnodes[index + 1]).Data[rotateCount - 1] = (null, null);
-                (node.Subnodes[index + 1]).KeysCount--;
-            }
-        }
-
-        private void Rebalancing(int index, ref Node node)
-        {
-            if (node.Subnodes[index].KeysCount < minimumDegree)
-            {
-                if (root == node && node.KeysCount == 1)
-                {
-                    if (index == 0)
-                    {
-                        if (node.Subnodes[index + 1].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index, ref node);
-                            height--;
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, false);
-                            return;
-                        }
-                    }
-                    else if (index == node.KeysCount)
-                    {
-                        if (node.Subnodes[index - 1].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index - 1, ref node);
-                            height--;
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, true);
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    if (index == 0)
-                    {
-                        if (node.Subnodes[index + 1].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index, ref node);
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, false);
-                            return;
-                        }
-                    }
-                    else if (index == node.KeysCount)
-                    {
-                        if (node.Subnodes[index - 1].KeysCount < minimumDegree)
-                        {
-                            NodeMerge(index - 1, ref node);
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, true);
-                            return;
-                        }
-                    }
-                    else if ((node.Subnodes[index - 1].KeysCount < minimumDegree) && (node.Subnodes[index + 1].KeysCount < minimumDegree))
-                    {
-                        NodeMerge(index, ref node);
-                        return;
-                    }
-                    else
-                    {
-                        if (node.Subnodes[index - 1].KeysCount >= minimumDegree)
-                        {
-                            NodeSwitch(index, ref node, true);
-                            return;
-                        }
-                        else
-                        {
-                            NodeSwitch(index, ref node, false);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void RemoveFromLeaf(string key, ref Node node, int height)
-        {
-            int index;
-            if (node == root && root.IsLeaf)
-            {
-                RemoveFromRootrOrNormalNode(key, ref node);
+                InsertNonFull(Root, newKey, newPointer);
                 return;
             }
-            if (height != 2)
-            {
-                index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
-                {
-                    index++;
-                }
-                RemoveFromLeaf(key, ref node.Subnodes[index], height - 1);
-                Rebalancing(index, ref node);
-            }
-            else
-            {
-                index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
-                {
-                    index++;
-                }
-                if (node.Subnodes[index].KeysCount >= minimumDegree)
-                {
-                    RemoveFromRootrOrNormalNode(key, ref node.Subnodes[index]);
-                    return;
-                }
-                else if (index == 0)
-                {
-                    if (node.Subnodes[index + 1].KeysCount < minimumDegree)
-                    {
-                        NodeMerge(index, ref node);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                    else
-                    {
-                        NodeSwitch(index, ref node, false);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                }
-                else if (index == node.KeysCount)
-                {
-                    if (node.Subnodes[index - 1].KeysCount < minimumDegree)
-                    {
-                        NodeMerge(index - 1, ref node);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                    else
-                    {
-                        NodeSwitch(index, ref node, true);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                }
-                else if ((node.Subnodes[index - 1].KeysCount < minimumDegree) && (node.Subnodes[index + 1].KeysCount < minimumDegree))
-                {
-                    NodeMerge(index, ref node);
-                    RemoveFromLeaf(key, ref node, height);
-                    return;
-                }
-                else
-                {
-                    if (node.Subnodes[index - 1].KeysCount >= minimumDegree)
-                    {
-                        NodeSwitch(index, ref node, true);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                    else
-                    {
-                        NodeSwitch(index, ref node, false);
-                        RemoveFromLeaf(key, ref node, height);
-                        return;
-                    }
-                }
-            }
+
+            Node oldRoot = Root;
+            Root = new Node(Degree);
+            Root.Children.Add(oldRoot);
+            SplitChild(Root, 0, oldRoot);
+            InsertNonFull(Root, newKey, newPointer);
+
+            Height++;
         }
 
-        private (string, string) GetSuccessor(ref Node node)
+        /// <summary>
+        /// Deletes a key from the BTree. This operations moves keys and nodes
+        /// as required to keep the BTree properties.
+        /// </summary>
+        /// <param name="keyToDelete">Key to be deleted.</param>
+        public void Delete(string keyToDelete)
         {
-            if (!node.IsLeaf)
-            {
-                return GetSuccessor(ref node.Subnodes[0]);
-            }
-            else
-            {
-                if (node.KeysCount < minimumDegree)
-                {
-                    return (null, null);
-                }
-                else
-                {
-                    var element = node.Data[0];
-                    for (int i = 0; i < node.KeysCount - 1; i++)
-                    {
-                        node.Data[i] = node.Data[i + 1];
-                    }
-                    node.Data[node.KeysCount - 1] = (null, null);
-                    node.KeysCount--;
-                    return element;
-                }
-            }
-        }
-
-        private (string,string) GetPredecessor(ref Node node)
-        {
-            if (!node.IsLeaf)
-            {
-                return GetPredecessor(ref node.Subnodes[node.KeysCount]);
-            }
-            else
-            {
-                if (node.KeysCount < minimumDegree)
-                {
-                    return (null, null);
-                }
-                else
-                {
-                    var element = node.Data[node.KeysCount - 1];
-                    node.Data[node.KeysCount - 1] = (null, null);
-                    node.KeysCount--;
-                    return element;
-                }
-            }
-        }
-
-        private void RemoveFromNode(string key, ref Node node, int height)
-        {
-            int index;
-            if (node == root && root.IsLeaf)
-            {
-                RemoveFromRootrOrNormalNode(key, ref node);
-                return;
-            }
-            if (height != 2)
-            {
-                index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
-                {
-                    index++;
-                }
-                RemoveFromNode(key, ref node.Subnodes[index], height - 1);
-                Rebalancing(index, ref node);
-            }
-            else
-            {
-                index = 0;
-                while (index < node.KeysCount && KeysCompare(node.Data[index].Key, key) < 0)
-                {
-                    index++;
-                }
-                if (GetSuccessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key) + 1]) != (null,null))
-                {
-                    node.Subnodes[index].Data[node.Subnodes[index].Find(key)] = GetSuccessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key) + 1]);
-                    return;
-                }
-                else if (GetPredecessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key)]) != (null, null))
-                {
-                    node.Subnodes[index].Data[node.Subnodes[index].Find(key)] = GetPredecessor(ref node.Subnodes[index].Subnodes[node.Subnodes[index].Find(key)]);
-                    return;
-                }
-                else
-                {
-                    var currentIndex = node.Subnodes[index].Find(key);
-                    node.Subnodes[index].Data[currentIndex] = (null, null);
-                    NodeMerge(currentIndex, ref node.Subnodes[index]);
-                    Rebalancing(currentIndex, ref node.Subnodes[index]);
-                    return;
-                }
-            }
-        }
-
-        public void Remove(string key)
-        {
-            if (RootIsEmpty())
-            {
-                throw new NullReferenceException("Root is empty");
-            }
-            else if (!CheckKey(key))
+            if (!IsContained(keyToDelete))
             {
                 throw new ArgumentNullException("Key not found.");
             }
-            else
+
+            DeleteInternal(Root, keyToDelete);
+
+            if (Root.Entries.Count == 0 && !Root.IsLeaf)
             {
-                var height = TryFindKey(key, root).Height;
-                if (height == 1 && this.height == height)
+                Root = Root.Children.Single();
+                Height--;
+            }
+        }
+
+        /// <summary>
+        /// Internal method to delete keys from the BTree
+        /// </summary>
+        /// <param name="node">Node to use to start search for the key.</param>
+        /// <param name="keyToDelete">Key to be deleted.</param>
+        private void DeleteInternal(Node node, string keyToDelete)
+        {
+            int i = node.Entries.TakeWhile(entry => keyToDelete.CompareTo(entry.Key) > 0).Count();
+
+            if (i < node.Entries.Count && node.Entries[i].Key.CompareTo(keyToDelete) == 0)
+            {
+                DeleteKeyFromNode(node, keyToDelete, i);
+                return;
+            }
+
+            if (!node.IsLeaf)
+            {
+                DeleteKeyFromSubtree(node, keyToDelete, i);
+            }
+        }
+
+        /// <summary>
+        /// Helper method that deletes a key from a subtree.
+        /// </summary>
+        /// <param name="parentNode">Parent node used to start search for the key.</param>
+        /// <param name="keyToDelete">Key to be deleted.</param>
+        /// <param name="subtreeIndexInNode">Index of subtree node in the parent node.</param>
+        private void DeleteKeyFromSubtree(Node parentNode, string keyToDelete, int subtreeIndexInNode)
+        {
+            Node childNode = parentNode.Children[subtreeIndexInNode];
+
+            if (childNode.HasReachedMinEntries)
+            {
+                int leftIndex = subtreeIndexInNode - 1;
+                Node leftSibling = subtreeIndexInNode > 0 ? parentNode.Children[leftIndex] : null;
+
+                int rightIndex = subtreeIndexInNode + 1;
+                Node rightSibling = subtreeIndexInNode < parentNode.Children.Count - 1
+                                                ? parentNode.Children[rightIndex]
+                                                : null;
+
+                if (leftSibling != null && leftSibling.Entries.Count > Degree - 1)
                 {
-                    RemoveFromRootrOrNormalNode(key, ref root);
-                    if (root.KeysCount == 0)
+                    childNode.Entries.Insert(0, parentNode.Entries[subtreeIndexInNode - 1]);
+                    parentNode.Entries[subtreeIndexInNode - 1] = leftSibling.Entries.Last();
+                    leftSibling.Entries.RemoveAt(leftSibling.Entries.Count - 1);
+
+                    if (!leftSibling.IsLeaf)
                     {
-                        root = null;
+                        childNode.Children.Insert(0, leftSibling.Children.Last());
+                        leftSibling.Children.RemoveAt(leftSibling.Children.Count - 1);
                     }
                 }
-                else if (this.height == height)
+                else if (rightSibling != null && rightSibling.Entries.Count > Degree - 1)
                 {
-                    RemoveFromLeaf(key, ref root, height);
+                    childNode.Entries.Add(parentNode.Entries[subtreeIndexInNode]);
+                    parentNode.Entries[subtreeIndexInNode] = rightSibling.Entries.First();
+                    rightSibling.Entries.RemoveAt(0);
+
+                    if (!rightSibling.IsLeaf)
+                    {
+                        childNode.Children.Add(rightSibling.Children.First());
+                        rightSibling.Children.RemoveAt(0);
+                    }
                 }
                 else
                 {
-                    RemoveFromNode(key, ref root, height);
+                    if (leftSibling != null)
+                    {
+                        childNode.Entries.Insert(0, parentNode.Entries[subtreeIndexInNode - 1]);
+                        var oldEntries = childNode.Entries;
+                        childNode.Entries = leftSibling.Entries;
+                        childNode.Entries.AddRange(oldEntries);
+                        if (!leftSibling.IsLeaf)
+                        {
+                            var oldChildren = childNode.Children;
+                            childNode.Children = leftSibling.Children;
+                            childNode.Children.AddRange(oldChildren);
+                        }
+
+                        parentNode.Children.RemoveAt(leftIndex);
+                        parentNode.Entries.RemoveAt(subtreeIndexInNode - 1);
+                    }
+                    else
+                    {
+                        if (rightSibling == null)
+                        {
+                            throw new IndexOutOfRangeException("Node should have at least one sibling.");
+                        }
+                        childNode.Entries.Add(parentNode.Entries[subtreeIndexInNode]);
+                        childNode.Entries.AddRange(rightSibling.Entries);
+                        if (!rightSibling.IsLeaf)
+                        {
+                            childNode.Children.AddRange(rightSibling.Children);
+                        }
+
+                        parentNode.Children.RemoveAt(rightIndex);
+                        parentNode.Entries.RemoveAt(subtreeIndexInNode);
+                    }
                 }
             }
+
+            DeleteInternal(childNode, keyToDelete);
+        }
+
+        /// <summary>
+        /// Helper method that deletes key from a node that contains it, be this
+        /// node a leaf node or an internal node.
+        /// </summary>
+        /// <param name="node">Node that contains the key.</param>
+        /// <param name="keyToDelete">Key to be deleted.</param>
+        /// <param name="keyIndexInNode">Index of key within the node.</param>
+        private void DeleteKeyFromNode(Node node, string keyToDelete, int keyIndexInNode)
+        {
+            if (node.IsLeaf)
+            {
+                node.Entries.RemoveAt(keyIndexInNode);
+                return;
+            }
+
+            Node predecessorChild = node.Children[keyIndexInNode];
+            if (predecessorChild.Entries.Count >= Degree)
+            {
+                Entry predecessorEntry = GetLastEntry(predecessorChild);
+                DeleteInternal(predecessorChild, predecessorEntry.Key);
+                node.Entries[keyIndexInNode] = predecessorEntry;
+            }
+            else
+            {
+                Node successorChild = node.Children[keyIndexInNode + 1];
+                if (successorChild.Entries.Count >= Degree)
+                {
+                    Entry successorEntry = GetFirstEntry(successorChild);
+                    DeleteInternal(successorChild, successorEntry.Key);
+                    node.Entries[keyIndexInNode] = successorEntry;
+                }
+                else
+                {
+                    predecessorChild.Entries.Add(node.Entries[keyIndexInNode]);
+                    predecessorChild.Entries.AddRange(successorChild.Entries);
+                    predecessorChild.Children.AddRange(successorChild.Children);
+
+                    node.Entries.RemoveAt(keyIndexInNode);
+                    node.Children.RemoveAt(keyIndexInNode + 1);
+
+                    DeleteInternal(predecessorChild, keyToDelete);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Helper method that gets the last entry (i.e. rightmost key) for a given node.
+        /// </summary>
+        private Entry GetLastEntry(Node node)
+        {
+            if (node.IsLeaf)
+            {
+                return node.Entries.Last();
+            }
+
+            return GetLastEntry(node.Children.Last());
+        }
+
+        /// <summary>
+        /// Helper method that gets the first entry (i.e. leftmost key) for a given node.
+        /// </summary>
+        private Entry GetFirstEntry(Node node)
+        {
+            if (node.IsLeaf)
+            {
+                return node.Entries.First();
+            }
+
+            return GetFirstEntry(node.Children.First());
+        }
+
+        /// <summary>
+        /// Helper method that search for a key in a given BTree.
+        /// </summary>
+        /// <param name="node">Node used to start the search.</param>
+        /// <param name="key">Key to be searched.</param>
+        /// <returns>Entry object with key information if found, null otherwise.</returns>
+        private Entry SearchInternal(Node node, string key)
+        {
+            int i = node.Entries.TakeWhile(entry => key.CompareTo(entry.Key) > 0).Count();
+
+            if (i < node.Entries.Count && node.Entries[i].Key.CompareTo(key) == 0)
+            {
+                return node.Entries[i];
+            }
+
+            return node.IsLeaf ? null : SearchInternal(node.Children[i], key);
+        }
+
+        /// <summary>
+        /// Helper method that splits a full node into two nodes.
+        /// </summary>
+        /// <param name="parentNode">Parent node that contains node to be split.</param>
+        /// <param name="nodeToBeSplitIndex">Index of the node to be split within parent.</param>
+        /// <param name="nodeToBeSplit">Node to be split.</param>
+        private void SplitChild(Node parentNode, int nodeToBeSplitIndex, Node nodeToBeSplit)
+        {
+            var newNode = new Node(Degree);
+
+            parentNode.Entries.Insert(nodeToBeSplitIndex, nodeToBeSplit.Entries[Degree - 1]);
+            parentNode.Children.Insert(nodeToBeSplitIndex + 1, newNode);
+
+            newNode.Entries.AddRange(nodeToBeSplit.Entries.GetRange(Degree, Degree - 1));
+
+            nodeToBeSplit.Entries.RemoveRange(Degree - 1, Degree);
+
+            if (!nodeToBeSplit.IsLeaf)
+            {
+                newNode.Children.AddRange(nodeToBeSplit.Children.GetRange(Degree, Degree));
+                nodeToBeSplit.Children.RemoveRange(Degree, Degree);
+            }
+        }
+
+        private void InsertNonFull(Node node, string newKey, string newPointer)
+        {
+            int positionToInsert = node.Entries.TakeWhile(entry => newKey.CompareTo(entry.Key) >= 0).Count();
+
+            if (node.IsLeaf)
+            {
+                node.Entries.Insert(positionToInsert, new Entry() { Key = newKey, Pointer = newPointer });
+                return;
+            }
+
+            Node child = node.Children[positionToInsert];
+            if (child.HasReachedMaxEntries)
+            {
+                SplitChild(node, positionToInsert, child);
+                if (newKey.CompareTo(node.Entries[positionToInsert].Key) > 0)
+                {
+                    positionToInsert++;
+                }
+            }
+
+            InsertNonFull(node.Children[positionToInsert], newKey, newPointer);
         }
     }
 }

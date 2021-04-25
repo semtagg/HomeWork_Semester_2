@@ -41,32 +41,58 @@ namespace HW_3_Task_1.Tests
         [TestCase]
         public void TestInsert()
         {
-            Assert.IsFalse(tree.CheckKey("0"));
+            Assert.IsNull(tree.Search("0"));
             for (int i = 1; i <= 24; i++)
             {
-                Assert.IsTrue(tree.CheckKey(i.ToString()));
+                Assert.IsNotNull(tree.Search(i.ToString()));
             }
-            Assert.IsFalse(tree.CheckKey("25"));
+            Assert.IsNull(tree.Search("25"));
         }
 
         [TestCase]
-        public void TestGetValue()
-        {
-            Assert.AreEqual(tree.GetValue("7"), "i");
-            Assert.AreEqual(tree.GetValue("13"), "p");
-            Assert.AreEqual(tree.GetValue("22"), "k");
+        public void TestSearch()
+        { 
+            Assert.AreEqual(tree.Search("7").Pointer, "i");
+            Assert.AreEqual(tree.Search("13").Pointer, "p");
+            Assert.AreEqual(tree.Search("22").Pointer, "k");
 
-            Assert.Throws<ArgumentNullException>(() => tree.GetValue("30"));
+            Assert.IsNull(tree.Search("30"));
         }
 
         [TestCase]
-        public void TestCheckKey()
+        public void TestIsContained()
         {
-            Assert.IsTrue(tree.CheckKey("3"));
-            Assert.IsTrue(tree.CheckKey("11"));
-            Assert.IsTrue(tree.CheckKey("21"));
+            Assert.IsTrue(tree.IsContained("3"));
+            Assert.IsTrue(tree.IsContained("11"));
+            Assert.IsTrue(tree.IsContained("21"));
 
-            Assert.IsFalse(tree.CheckKey("40"));
+            Assert.IsFalse(tree.IsContained("40"));
+        }
+
+        [TestCase]
+        public void TestChange()
+        {
+            tree.Change("1", "aa");
+            Assert.AreEqual(tree.Search("1").Pointer, "aa");
+            tree.Change("16", "uu");
+            Assert.AreEqual(tree.Search("16").Pointer, "uu");
+            tree.Change("24", "mm");
+            Assert.AreEqual(tree.Search("24").Pointer, "mm");
+
+            Assert.Throws<ArgumentNullException>(() => tree.Change("25", "xx"));
+        }
+
+        [TestCase]
+        public void TestDelete()
+        {
+            tree.Delete("1");
+            Assert.IsFalse(tree.IsContained("1"));
+            tree.Delete("2");
+            Assert.IsFalse(tree.IsContained("2"));
+            tree.Delete("3");
+            Assert.IsFalse(tree.IsContained("3"));
+
+            Assert.Throws<ArgumentNullException>(() => tree.Delete("25"));
         }
     }
 }
