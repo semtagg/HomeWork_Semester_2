@@ -5,16 +5,22 @@
     /// </summary>
     public class UniqueList : List
     {
-        public override void InsertByIndex(int value, int index)
+        public override void Insert(int value, int index)
         {
             if (CheckValue(value))
             {
-                throw new AddElementException("Element is already there.");
+                throw new ElementIsAlreadyExistException();
             }
-            else
+            base.Insert(value, index);
+        }
+
+        public override void Change(int value, int index)
+        {
+            if (CheckValue(value) && SearchByValue(value) != index)
             {
-                base.InsertByIndex(value, index);
+                throw new ElementIsAlreadyExistException();
             }
+            base.Change(value, index);
         }
     }
 }

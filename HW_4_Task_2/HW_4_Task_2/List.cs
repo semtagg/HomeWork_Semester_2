@@ -7,7 +7,7 @@ namespace HW_4_Task_2
     /// </summary>
     public class List
     {
-        protected class ListNode
+        private class ListNode
         {
             public ListNode NextNode { get; set; }
 
@@ -18,41 +18,27 @@ namespace HW_4_Task_2
                 Value = value;
                 NextNode = null;
             }
+
+            public ListNode(int value, ListNode next)
+            {
+                Value = value;
+                NextNode = next;
+            }
         }
 
-        private ListNode root;
         private ListNode head;
         private int listSize = 0;
 
-        protected bool IndexCheck(int index)
-        {
-            if ((index < 0) || (listSize < index))
-            {
-                return false;
-            }
-            return true;
-        }
+        private bool CheckIndex(int index)
+            => index < 0 || listSize < index ? false : true;
 
-        private void SearchByIndex(int index)
+        private ListNode SearchByIndex(int index)
         {
-            root = head;
-            while (0 != index)
+            var root = head;
+            while (index != 0)
             {
                 root = root.NextNode;
                 index--;
-            }
-        }
-
-        protected ListNode SearchByValue(int value)
-        {
-            root = head;
-            while (root != null)
-            {
-                if ((root.NextNode != null) &&((root.NextNode).Value == value))
-                {
-                    return root;
-                }
-                root = root.NextNode;
             }
             return root;
         }
@@ -60,33 +46,31 @@ namespace HW_4_Task_2
         /// <summary>
         /// Inserts the value of the new element by the index.
         /// </summary>
-        public virtual void InsertByIndex(int value, int index)
+        public virtual void Insert(int value, int index)
         {
-            if (!IndexCheck(index))
+            if (!CheckIndex(index))
             {
                 throw new IndexOutOfRangeException();
             }
-            if (root == null)
+            if (head == null)
             {
-                root = new ListNode(value);
-                head = root;
+                head = new(value);
             }
             else
             {
-                ListNode helpNode;
-                root = head;
                 if (index == 0)
                 {
-                    helpNode = root;
-                    root.NextNode = helpNode;
-                    root.Value = value;
+                    head = new(value, head);
+                }
+                else if (index == listSize)
+                {
+                    SearchByIndex(index - 1).NextNode = new(value);
                 }
                 else
                 {
-                    SearchByIndex(index - 1);
-                    helpNode = root.NextNode;
-                    root.NextNode = new ListNode(value);
-                    (root.NextNode).NextNode = helpNode;
+                    var helpNode = SearchByIndex(index - 1);
+                    ListNode newNode = new(value, SearchByIndex(index).NextNode);
+                    helpNode.NextNode = newNode;
                 }
             }
             listSize++;
@@ -95,96 +79,62 @@ namespace HW_4_Task_2
         /// <summary>
         /// Removes the value of the element by the index.
         /// </summary>
-        public void RemoveByIndex(int index)
+        public void Remove(int index)
         {
-            if (!IndexCheck(index))
+            if (!CheckIndex(index))
             {
-                throw new IndexOutOfRangeException();
+                throw new ElementDoesNotExistException();
             }
-            SearchByIndex(index - 1);
-            var helpElement = root.NextNode;
-            root.NextNode = (root.NextNode).NextNode;
-            helpElement = null;
+            SearchByIndex(index - 1).NextNode = SearchByIndex(index).NextNode;
+            listSize--;
         }
 
         /// <summary>
         /// Changes the value of the element by the index.
         /// </summary>
-        public void ChangeByIndex(int value, int index)
+        public virtual void Change(int value, int index)
         {
-            if (!IndexCheck(index))
+            if (!CheckIndex(index))
             {
                 throw new IndexOutOfRangeException();
             }
-            SearchByIndex(index);
-            root.Value = value;
+            SearchByIndex(index).Value = value;
         }
 
-        /// <summary>
-        /// Tries to remove an element by the index.
-        /// </summary>
-        public void RemoveByValue(int value)
-        {
-            if (root == null)
-            {
-                throw new NullReferenceException();
-            }
-            else
-            {
-                root = SearchByValue(value);
-                if (root == null)
-                {
-                    throw new DeleteElementException("Element not exist.");
-                }
-                else
-                {
-                    var helpElement = root.NextNode;
-                    root.NextNode = (root.NextNode).NextNode;
-                    helpElement = null;
-                }
-            }
-                
-        }
 
         /// <summary>
-        /// Returns value of the last element.
+        /// Searches an element in the list by its value.
         /// </summary>
-        public int GetLastValue()
+        /// <returns>Element index or "-1" if the element is not in the list.</returns>
+        public int SearchByValue(int value)
         {
-            root = head;
-            if (root == null)
+            var root = head;
+            var index = -1;
+            while (root != null)
             {
-                throw new NullReferenceException();
-            }
-            while (root.NextNode != null)
-            {
+                index++;
+                if (root.Value == value)
+                {
+                    return index;
+                }
                 root = root.NextNode;
             }
-            return root.Value;
+            return -1;
         }
 
         /// <summary>
-        /// Returns value of the element by the index.
+        /// Checks the content of the element in the list.
         /// </summary>
-        public int GetValueByIndex(int index)
+        public bool CheckValue(int value)
         {
-            if (!IndexCheck(index + 1))
-            {
-                throw new IndexOutOfRangeException();
-            }
-            SearchByIndex(index);
-            return root.Value;
-        }
-
-        protected bool CheckValue(int value)
-        {
-            root = head;
+            var root = head;
             while (root != null)
             {
                 if (root.Value == value)
                 {
                     return true;
                 }
+                root = root.NextNode;
             }
             return false;
         }
