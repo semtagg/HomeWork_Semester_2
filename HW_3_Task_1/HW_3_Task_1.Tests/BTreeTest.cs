@@ -79,7 +79,7 @@ namespace HW_3_Task_1.Tests
             tree.Change("24", "mm");
             Assert.AreEqual(tree.Search("24").Pointer, "mm");
 
-            Assert.Throws<ArgumentNullException>(() => tree.Change("25", "xx"));
+            Assert.Throws<InvalidOperationException>(() => tree.Change("25", "xx"));
         }
 
         [TestCase]
@@ -92,7 +92,7 @@ namespace HW_3_Task_1.Tests
             tree.Delete("3");
             Assert.IsFalse(tree.IsContained("3"));
 
-            Assert.Throws<ArgumentNullException>(() => tree.Delete("25"));
+            Assert.Throws<InvalidOperationException>(() => tree.Delete("25"));
         }
     }
 }

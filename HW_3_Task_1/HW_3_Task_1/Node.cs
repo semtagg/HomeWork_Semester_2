@@ -17,28 +17,10 @@ namespace HW_3_Task_1
 
         public List<Entry> Entries { get; set; }
 
-        public bool IsLeaf
-        {
-            get
-            {
-                return Children.Count == 0;
-            }
-        }
+        public bool IsLeaf => Children.Count == 0;
 
-        public bool HasReachedMaxEntries
-        {
-            get
-            {
-                return Entries.Count == (2 * this.degree) - 1;
-            }
-        }
+        public bool HasReachedMaxEntries => Entries.Count == (2 * this.degree) - 1;
 
-        public bool HasReachedMinEntries
-        {
-            get
-            {
-                return Entries.Count == this.degree - 1;
-            }
-        }
+        public bool HasReachedMinEntries => Entries.Count == this.degree - 1;
     }
 }

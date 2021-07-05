@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace HW_3_Task_1
@@ -12,7 +13,7 @@ namespace HW_3_Task_1
         {
             if (degree < 2)
             {
-                throw new ArgumentException("BTree degree must be at least 2", "degree");
+                throw new ArgumentException("BTree degree must be at least 2", nameof(degree));
             }
 
             Root = new Node(degree);
@@ -32,7 +33,7 @@ namespace HW_3_Task_1
         /// <param name="key">Key being checked.</param>
         /// <returns>True if the key is in the tree, false if it's not.</returns>
         public bool IsContained(string key)
-            => SearchInternal(Root, key) == null ? false : true;
+            => SearchInternal(Root, key) != null;
 
         /// <summary>
         /// Searches a key in the BTree, returning the entry with it and with the pointer.
@@ -51,7 +52,7 @@ namespace HW_3_Task_1
         {
             if (!IsContained(key))
             {
-                throw new ArgumentNullException("Key not found.");
+                throw new InvalidOperationException("Key not found.");
             }
 
             SearchInternal(Root, key).Pointer = newPointer;
@@ -89,7 +90,7 @@ namespace HW_3_Task_1
         {
             if (!IsContained(keyToDelete))
             {
-                throw new ArgumentNullException("Key not found.");
+                throw new InvalidOperationException("Key not found.");
             }
 
             DeleteInternal(Root, keyToDelete);
@@ -188,7 +189,7 @@ namespace HW_3_Task_1
                     {
                         if (rightSibling == null)
                         {
-                            throw new IndexOutOfRangeException("Node should have at least one sibling.");
+                            Debug.Assert(false, "Node should have at least one sibling.");
                         }
                         childNode.Entries.Add(parentNode.Entries[subtreeIndexInNode]);
                         childNode.Entries.AddRange(rightSibling.Entries);

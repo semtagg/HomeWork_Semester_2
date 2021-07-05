@@ -6,7 +6,6 @@ namespace HW_3_Task_1
     {
         static void Main(string[] args)
         {
-
         }
     }
 }
