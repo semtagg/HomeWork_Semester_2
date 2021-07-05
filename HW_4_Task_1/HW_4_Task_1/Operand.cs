@@ -10,10 +10,7 @@ namespace HW_4_Task_1
         public double Value { get; set; }
 
         public Operand(double value)
-        {
-            Value = value;
-        }
-
+            => Value = value;
 
         public double Calculate()
             => Value;

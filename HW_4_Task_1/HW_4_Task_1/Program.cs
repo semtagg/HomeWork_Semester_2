@@ -7,14 +7,15 @@ namespace HW_4_Task_1
         static void Main(string[] args)
         {
             var tree = new Tree();
-            var expression = "( * ( + 1 ( - 5 3 ) ( / 4 2 )".Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var expression = "( * ( + 1 ( - 5 3 ) ( / 4 2 )";
             try
             {
                 tree.Build(expression);
             }
-            catch (CorrectExpressionException)
+            catch (IncorrectFormOfExpressionException)
             {
-                throw new CorrectExpressionException("Incorrect form of the expression.");
+                Console.WriteLine("Incorrect form of the expression.");
+                return;
             }
             Console.WriteLine($"Result: {tree.Calculate()}");
             tree.Print();

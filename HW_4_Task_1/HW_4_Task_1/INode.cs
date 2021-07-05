@@ -1,5 +1,8 @@
 ﻿namespace HW_4_Task_1
 {
+    /// <summary>
+    /// Interface of the parse tree node.
+    /// </summary>
     interface INode
     {
         /// <summary>
