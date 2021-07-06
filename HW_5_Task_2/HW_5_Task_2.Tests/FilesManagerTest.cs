@@ -1,11 +1,5 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace HW_5_Task_2.Tests
 {
@@ -29,7 +23,7 @@ namespace HW_5_Task_2.Tests
         [TestCase]
         public void GetOptimalNetworkErrorTest()
         {
-            Assert.Throws<NetworkIsNotConnectedException>(() => FilesManager.GetOptimalNetwork("..\\..\\..\\routers2.txt", "..\\..\\..\\result_routers2.txt"));
+            Assert.Throws<GraphIsNotConnectedException>(() => FilesManager.GetOptimalNetwork("..\\..\\..\\routers2.txt", "..\\..\\..\\result_routers2.txt"));
         }
     }
 }

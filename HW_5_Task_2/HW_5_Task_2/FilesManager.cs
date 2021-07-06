@@ -14,7 +14,7 @@ namespace HW_5_Task_2
         private static int[,] InitGraph(int size)
         {
             var graph = new int[size, size];
-            for(int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
@@ -31,7 +31,7 @@ namespace HW_5_Task_2
             for (int i = 0; i < data.Length; i++)
             {
                 var currentLine = data[i].Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
-                if(int.Parse(currentLine[0]) > maxSize)
+                if (int.Parse(currentLine[0]) > maxSize)
                 {
                     maxSize = int.Parse(currentLine[0]);
                 }
@@ -54,20 +54,13 @@ namespace HW_5_Task_2
             for (int i = 0; i < data.Length; i++)
             {
                 var currentLine = data[i].Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
-                for(int j = 1; j < currentLine.Length; j+=2)
+                for (int j = 1; j < currentLine.Length; j += 2)
                 {
                     graph[int.Parse(currentLine[0]) - 1, int.Parse(currentLine[j]) - 1] = int.Parse(currentLine[j + 1]);
                     graph[int.Parse(currentLine[j]) - 1, int.Parse(currentLine[0]) - 1] = int.Parse(currentLine[j + 1]);
                 }
             }
-            try
-            {
-                return Algorithm.ChangedPrim(graph);
-            }
-            catch (GraphIsNotConnectedException)
-            {
-                throw new NetworkIsNotConnectedException();
-            }
+            return Algorithm.ChangedPrim(graph);
         }
 
         private static void WriteToFile(string inputPath, string outputPath)
@@ -79,7 +72,7 @@ namespace HW_5_Task_2
                 string line = $"{i + 1}: ";
                 for (int j = 0; j < graph.GetUpperBound(0) + 1; j++)
                 {
-                    if (graph[i,j] != int.MinValue)
+                    if (graph[i, j] != int.MinValue)
                     {
                         line += $"{j + 1} ({graph[i, j]}), ";
                         graph[i, j] = int.MinValue;

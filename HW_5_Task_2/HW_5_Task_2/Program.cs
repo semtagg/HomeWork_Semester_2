@@ -7,15 +7,17 @@ namespace HW_5_Task_2
     {
         static void Main(string[] args)
         {
+            if (args.Length != 2 || !File.Exists(args[0]) || File.Exists(args[1]))
+            {
+                Console.WriteLine("Error. Try again!");
+            }
             try
             {
                 FilesManager.GetOptimalNetwork(args[0], args[1]);
             }
-            catch (NetworkIsNotConnectedException ex)
+            catch (GraphIsNotConnectedException ex)
             {
-                var errorWriter = Console.Error;
-                errorWriter.WriteLine(ex.Message);
-                return;
+                Console.Error.WriteLine(ex.Message);
             }
         }
     }
