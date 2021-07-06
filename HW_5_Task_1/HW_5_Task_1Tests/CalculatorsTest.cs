@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HW_5_Task_1;
 using NUnit.Framework;
 
@@ -7,32 +8,27 @@ namespace HW_5_Task_1Tests
     [Serializable]
     public class CalculatorsTest
     {
-        private IStack[] calculators = {new ArrayStack(), new ListStack()};
-
-        [TestCase]
-        public void TestCalculators()
+        [TestCaseSource(nameof(Calculators))]
+        public void TestCalculators(Calculator calculator)
         {
-            for (int i = 0; i < calculators.Length; i++)
-            {
-                var calcElement = new Calculator(calculators[i]);
-
-                Assert.AreEqual(calcElement.GetResult("1 2 +"), 3d);
-                Assert.AreEqual(calcElement.GetResult("3 5 + 2 * 6 7 + 8 9 - / -"), 29d);
-                Assert.AreEqual(calcElement.GetResult("6 10 + 4 - 1 2 2 * + / 1 +"), 3.4d);
-            }
+            Assert.AreEqual(3d, calculator.GetResult("1 2 +"), 10e-6);
+            Assert.AreEqual(29d, calculator.GetResult("3 5 + 2 * 6 7 + 8 9 - / -"), 10e-6);
+            Assert.AreEqual(3.4d, calculator.GetResult("6 10 + 4 - 1 2 2 * + / 1 +"), 10e-6);
         }
 
-        [TestCase]
-        public void ErrorTestCalculators()
+        [TestCaseSource(nameof(Calculators))]
+        public void ErrorTestCalculators(Calculator calculator)
         {
-            for (int i = 0; i < calculators.Length; i++)
-            {
-                var calcElement = new Calculator(calculators[i]);
-
-                Assert.Throws<InvalidOperationException>(() => calcElement.GetResult("avdsa"));
-                Assert.Throws<InvalidOperationException>(() => calcElement.GetResult("3 + 5"));
-                Assert.Throws<DivideByZeroException>(() => calcElement.GetResult("2 0 /"));
-            }
+            Assert.Throws<InvalidOperationException>(() => calculator.GetResult("avdsa"));
+            Assert.Throws<InvalidOperationException>(() => calculator.GetResult("3 + 5"));
+            Assert.Throws<DivideByZeroException>(() => calculator.GetResult("2 0 /"));
         }
+
+        private static IEnumerable<TestCaseData> Calculators
+        => new TestCaseData[]
+        {
+            new TestCaseData(new Calculator(new ArrayStack())),
+            new TestCaseData(new Calculator(new ListStack())),
+        };
     }
 }
