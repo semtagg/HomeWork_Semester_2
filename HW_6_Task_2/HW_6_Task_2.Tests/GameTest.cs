@@ -11,7 +11,7 @@ namespace HW_6_Task_2.Tests
         [SetUp]
         public void SetUp()
         {
-            map = new Map("test_map_1.txt");
+            map = new Map("../../test_map_1.txt");
         }
 
         [Test]
