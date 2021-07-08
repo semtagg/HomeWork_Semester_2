@@ -6,7 +6,7 @@ namespace HW_6_Task_2
         static void Main(string[] args)
         {
             var eventLoop = new EventLoop();
-            var game = new Game("map.txt");
+            var game = new Game("test_map_1.txt");
             eventLoop.LeftHandler += game.OnLeft;
             eventLoop.RightHandler += game.OnRight;
             eventLoop.UpHandler += game.OnUp;
