@@ -25,7 +25,7 @@ namespace HW_7_Task_1
         {
             try
             {
-                result = calc.TryCalculate((sender as Button).Text);            
+                result = calc.TryCalculate((sender as Button).Text);
                 textBox.Text = result;
             }
             catch (DivideByZeroException)
@@ -35,7 +35,6 @@ namespace HW_7_Task_1
                 textBox.Clear();
                 textBox.Text = "Делить на нуль нельзя!";
             }
-            
         }
 
         private void button16Click(object sender, EventArgs e)
