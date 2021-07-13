@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace HW_8_Task_1
@@ -6,13 +10,14 @@ namespace HW_8_Task_1
     /// <summary>
     /// A class that implements a dictionary using a BTree.
     /// </summary>
-    public class BTree
+    public class BTree<TKey, TValue> : IDictionary<TKey, TValue>
+        where TKey : IComparable
     {
         public BTree(int degree)
         {
             if (degree < 2)
             {
-                throw new ArgumentException("BTree degree must be at least 2", "degree");
+                throw new ArgumentException("BTree degree must be at least 2", nameof(degree));
             }
 
             Root = new Node(degree);
@@ -26,13 +31,23 @@ namespace HW_8_Task_1
 
         public int Height { get; private set; }
 
+        public ICollection<TKey> Keys => throw new NotImplementedException();
+
+        public ICollection<TValue> Values => throw new NotImplementedException();
+
+        public int Count => throw new NotImplementedException();
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public TValue this[TKey key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         /// <summary>
         /// Checks if the key is in the BTree.
         /// </summary>
         /// <param name="key">Key being checked.</param>
         /// <returns>True if the key is in the tree, false if it's not.</returns>
         public bool IsContained(string key)
-            => SearchInternal(Root, key) == null ? false : true;
+            => SearchInternal(Root, key) != null;
 
         /// <summary>
         /// Searches a key in the BTree, returning the entry with it and with the pointer.
@@ -51,7 +66,7 @@ namespace HW_8_Task_1
         {
             if (!IsContained(key))
             {
-                throw new ArgumentNullException("Key not found.");
+                throw new InvalidOperationException("Key not found.");
             }
 
             SearchInternal(Root, key).Pointer = newPointer;
@@ -89,7 +104,7 @@ namespace HW_8_Task_1
         {
             if (!IsContained(keyToDelete))
             {
-                throw new ArgumentNullException("Key not found.");
+                throw new InvalidOperationException("Key not found.");
             }
 
             DeleteInternal(Root, keyToDelete);
@@ -188,7 +203,7 @@ namespace HW_8_Task_1
                     {
                         if (rightSibling == null)
                         {
-                            throw new IndexOutOfRangeException("Node should have at least one sibling.");
+                            Debug.Assert(false, "Node should have at least one sibling.");
                         }
                         childNode.Entries.Add(parentNode.Entries[subtreeIndexInNode]);
                         childNode.Entries.AddRange(rightSibling.Entries);
@@ -340,6 +355,61 @@ namespace HW_8_Task_1
             }
 
             InsertNonFull(node.Children[positionToInsert], newKey, newPointer);
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(TKey key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(KeyValuePair<TKey, TValue> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(KeyValuePair<TKey, TValue> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(KeyValuePair<TKey, TValue> item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }
