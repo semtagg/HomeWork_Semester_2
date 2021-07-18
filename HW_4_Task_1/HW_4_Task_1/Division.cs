@@ -2,6 +2,9 @@
 
 namespace HW_4_Task_1
 {
+    /// <summary>
+    /// A class for the division operator.
+    /// </summary>
     class Division : Operator
     {
         public Division(INode LeftChild, INode RightChild)

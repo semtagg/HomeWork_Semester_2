@@ -1,5 +1,9 @@
-﻿namespace HW_4_Task_1
+﻿
+namespace HW_4_Task_1
 {
+    /// <summary>
+    /// A class for the subtraction operator.
+    /// </summary>
     class Subtraction : Operator
     {
         public Subtraction(INode LeftChild, INode RightChild)

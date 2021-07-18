@@ -1,5 +1,9 @@
-﻿namespace HW_4_Task_1
+﻿
+namespace HW_4_Task_1
 {
+    /// <summary>
+    /// A class for the multiplication operator.
+    /// </summary>
     class Multiplication : Operator
     {
         public Multiplication(INode LeftChild, INode RightChild)

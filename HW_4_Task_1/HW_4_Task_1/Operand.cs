@@ -16,8 +16,6 @@ namespace HW_4_Task_1
             => Value;
 
         public void Print()
-        {
-            Console.Write($"{Value} ");
-        }
+            => Console.Write($"{Value} ");
     }
 }

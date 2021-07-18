@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace HW_4_Task_1
 {
+    /// <summary>
+    /// A class for the addition operator.
+    /// </summary>
     class Addition : Operator
     {
         public Addition(INode LeftChild, INode RightChild)
