@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace HW_6_Task_1
 {
-    public class Methods
+    /// <summary>
+    /// Class that contains Map, Filter and Fold methods.
+    /// </summary>
+    public static class Methods
     {
         /// <summary>
         /// Applies the passed function to each item in the passed list.
