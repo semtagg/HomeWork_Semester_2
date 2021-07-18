@@ -37,7 +37,7 @@ namespace HW_7_Task_1
             }
         }
 
-        private void button16Click(object sender, EventArgs e)
+        private void purgeButtonClick(object sender, EventArgs e)
         {
             result = "";
             calc.Default();

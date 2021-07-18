@@ -232,7 +232,7 @@ namespace HW_7_Task_1
             this.button16.TabIndex = 51;
             this.button16.Text = "C";
             this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16Click);
+            this.button16.Click += new System.EventHandler(this.purgeButtonClick);
             // 
             // CalculatorForm
             // 
