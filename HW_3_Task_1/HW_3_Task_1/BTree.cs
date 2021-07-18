@@ -16,16 +16,14 @@ namespace HW_3_Task_1
                 throw new ArgumentException("BTree degree must be at least 2", nameof(degree));
             }
 
-            Root = new Node(degree);
-            Degree = degree;
-            Height = 1;
+            root = new Node(degree);
+            this.degree = degree;
+            height = 1;
         }
 
-        public Node Root { get; private set; }
-
-        public int Degree { get; private set; }
-
-        public int Height { get; private set; }
+        private Node root;
+        private int degree;
+        private int height;
 
         /// <summary>
         /// Checks if the key is in the BTree.
@@ -33,7 +31,7 @@ namespace HW_3_Task_1
         /// <param name="key">Key being checked.</param>
         /// <returns>True if the key is in the tree, false if it's not.</returns>
         public bool IsContained(string key)
-            => SearchInternal(Root, key) != null;
+            => SearchInternal(root, key) != null;
 
         /// <summary>
         /// Searches a key in the BTree, returning the entry with it and with the pointer.
@@ -41,44 +39,44 @@ namespace HW_3_Task_1
         /// <param name="key">Key being searched.</param>
         /// <returns>Entry for that key, null otherwise.</returns>
         public Entry Search(string key)
-            => SearchInternal(Root, key);
+            => SearchInternal(root, key);
 
         /// <summary>
-        /// Attempts to change the pointer by key.
+        /// Attempts to change the data by key.
         /// </summary>
         /// <param name="key">Key being changed.</param>
-        /// <param name="newPointer">New pointer that changed by key.</param>
-        public void Change(string key, string newPointer)
+        /// <param name="newData">New data that changed by key.</param>
+        public void Change(string key, string newData)
         {
             if (!IsContained(key))
             {
                 throw new InvalidOperationException("Key not found.");
             }
 
-            SearchInternal(Root, key).Pointer = newPointer;
+            SearchInternal(root, key).Data = newData;
         }
 
         /// <summary>
-        /// Inserts a new key associated with a pointer in the BTree. This
+        /// Inserts a new key associated with a data in the BTree. This
         /// operation splits nodes as required to keep the BTree properties.
         /// </summary>
         /// <param name="newKey">Key to be inserted.</param>
-        /// <param name="newPointer">Pointer to be associated with inserted key.</param>
-        public void Insert(string newKey, string newPointer)
+        /// <param name="newData">Data to be associated with inserted key.</param>
+        public void Insert(string newKey, string newData)
         {
-            if (!Root.HasReachedMaxEntries)
+            if (!root.HasReachedMaxEntries)
             {
-                InsertNonFull(Root, newKey, newPointer);
+                InsertNonFull(root, newKey, newData);
                 return;
             }
 
-            Node oldRoot = Root;
-            Root = new Node(Degree);
-            Root.Children.Add(oldRoot);
-            SplitChild(Root, 0, oldRoot);
-            InsertNonFull(Root, newKey, newPointer);
+            Node oldRoot = root;
+            root = new Node(degree);
+            root.Children.Add(oldRoot);
+            SplitChild(root, 0, oldRoot);
+            InsertNonFull(root, newKey, newData);
 
-            Height++;
+            height++;
         }
 
         /// <summary>
@@ -93,12 +91,12 @@ namespace HW_3_Task_1
                 throw new InvalidOperationException("Key not found.");
             }
 
-            DeleteInternal(Root, keyToDelete);
+            DeleteInternal(root, keyToDelete);
 
-            if (Root.Entries.Count == 0 && !Root.IsLeaf)
+            if (root.Entries.Count == 0 && !root.IsLeaf)
             {
-                Root = Root.Children.Single();
-                Height--;
+                root = root.Children.Single();
+                height--;
             }
         }
 
@@ -143,7 +141,7 @@ namespace HW_3_Task_1
                                                 ? parentNode.Children[rightIndex]
                                                 : null;
 
-                if (leftSibling != null && leftSibling.Entries.Count > Degree - 1)
+                if (leftSibling != null && leftSibling.Entries.Count > degree - 1)
                 {
                     childNode.Entries.Insert(0, parentNode.Entries[subtreeIndexInNode - 1]);
                     parentNode.Entries[subtreeIndexInNode - 1] = leftSibling.Entries.Last();
@@ -155,7 +153,7 @@ namespace HW_3_Task_1
                         leftSibling.Children.RemoveAt(leftSibling.Children.Count - 1);
                     }
                 }
-                else if (rightSibling != null && rightSibling.Entries.Count > Degree - 1)
+                else if (rightSibling != null && rightSibling.Entries.Count > degree - 1)
                 {
                     childNode.Entries.Add(parentNode.Entries[subtreeIndexInNode]);
                     parentNode.Entries[subtreeIndexInNode] = rightSibling.Entries.First();
@@ -223,7 +221,7 @@ namespace HW_3_Task_1
             }
 
             Node predecessorChild = node.Children[keyIndexInNode];
-            if (predecessorChild.Entries.Count >= Degree)
+            if (predecessorChild.Entries.Count >= degree)
             {
                 Entry predecessorEntry = GetLastEntry(predecessorChild);
                 DeleteInternal(predecessorChild, predecessorEntry.Key);
@@ -232,7 +230,7 @@ namespace HW_3_Task_1
             else
             {
                 Node successorChild = node.Children[keyIndexInNode + 1];
-                if (successorChild.Entries.Count >= Degree)
+                if (successorChild.Entries.Count >= degree)
                 {
                     Entry successorEntry = GetFirstEntry(successorChild);
                     DeleteInternal(successorChild, successorEntry.Key);
@@ -304,19 +302,19 @@ namespace HW_3_Task_1
         /// <param name="nodeToBeSplit">Node to be split.</param>
         private void SplitChild(Node parentNode, int nodeToBeSplitIndex, Node nodeToBeSplit)
         {
-            var newNode = new Node(Degree);
+            var newNode = new Node(degree);
 
-            parentNode.Entries.Insert(nodeToBeSplitIndex, nodeToBeSplit.Entries[Degree - 1]);
+            parentNode.Entries.Insert(nodeToBeSplitIndex, nodeToBeSplit.Entries[degree - 1]);
             parentNode.Children.Insert(nodeToBeSplitIndex + 1, newNode);
 
-            newNode.Entries.AddRange(nodeToBeSplit.Entries.GetRange(Degree, Degree - 1));
+            newNode.Entries.AddRange(nodeToBeSplit.Entries.GetRange(degree, degree - 1));
 
-            nodeToBeSplit.Entries.RemoveRange(Degree - 1, Degree);
+            nodeToBeSplit.Entries.RemoveRange(degree - 1, degree);
 
             if (!nodeToBeSplit.IsLeaf)
             {
-                newNode.Children.AddRange(nodeToBeSplit.Children.GetRange(Degree, Degree));
-                nodeToBeSplit.Children.RemoveRange(Degree, Degree);
+                newNode.Children.AddRange(nodeToBeSplit.Children.GetRange(degree, degree));
+                nodeToBeSplit.Children.RemoveRange(degree, degree);
             }
         }
 
@@ -326,7 +324,7 @@ namespace HW_3_Task_1
 
             if (node.IsLeaf)
             {
-                node.Entries.Insert(positionToInsert, new Entry() { Key = newKey, Pointer = newPointer });
+                node.Entries.Insert(positionToInsert, new Entry() { Key = newKey, Data = newPointer });
                 return;
             }
 

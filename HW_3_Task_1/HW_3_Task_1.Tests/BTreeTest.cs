@@ -52,9 +52,9 @@ namespace HW_3_Task_1.Tests
         [TestCase]
         public void TestSearch()
         { 
-            Assert.AreEqual(tree.Search("7").Pointer, "i");
-            Assert.AreEqual(tree.Search("13").Pointer, "p");
-            Assert.AreEqual(tree.Search("22").Pointer, "k");
+            Assert.AreEqual("i", tree.Search("7").Data);
+            Assert.AreEqual("p", tree.Search("13").Data);
+            Assert.AreEqual("k", tree.Search("22").Data);
 
             Assert.IsNull(tree.Search("30"));
         }
@@ -73,11 +73,11 @@ namespace HW_3_Task_1.Tests
         public void TestChange()
         {
             tree.Change("1", "aa");
-            Assert.AreEqual(tree.Search("1").Pointer, "aa");
+            Assert.AreEqual("aa", tree.Search("1").Data);
             tree.Change("16", "uu");
-            Assert.AreEqual(tree.Search("16").Pointer, "uu");
+            Assert.AreEqual("uu", tree.Search("16").Data);
             tree.Change("24", "mm");
-            Assert.AreEqual(tree.Search("24").Pointer, "mm");
+            Assert.AreEqual("mm", tree.Search("24").Data);
 
             Assert.Throws<InvalidOperationException>(() => tree.Change("25", "xx"));
         }
