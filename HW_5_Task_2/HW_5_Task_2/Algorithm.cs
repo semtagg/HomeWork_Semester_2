@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// A class containing changed Prim's algorithm.
-    /// /// </summary>
+    /// </summary>
     public static class Algorithm
     {
         private static (int[], bool[]) InitKeyAndSet(int verticesCount)
@@ -124,7 +124,7 @@
                 set[currentMaxKey] = true;
                 for (int j = 0; j < verticesCount; ++j)
                 {
-                    if (graph[currentMaxKey, j] != int.MinValue && set[j] == false && graph[currentMaxKey, j] > key[j])
+                    if (graph[currentMaxKey, j] != int.MinValue && !set[j] && graph[currentMaxKey, j] > key[j])
                     {
                         parent[j] = currentMaxKey;
                         key[j] = graph[currentMaxKey, j];
