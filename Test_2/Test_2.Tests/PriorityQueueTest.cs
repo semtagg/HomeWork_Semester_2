@@ -29,15 +29,15 @@ namespace Test_2.Tests
         public void DequeueTest()
         {
             var result = queue.Dequeue();
-            Assert.AreEqual(result, "d");
+            Assert.AreEqual("d", result);
             result = queue.Dequeue();
-            Assert.AreEqual(result, "a");
+            Assert.AreEqual("a", result);
             result = queue.Dequeue();
-            Assert.AreEqual(result, "b");
+            Assert.AreEqual("b", result);
             result = queue.Dequeue();
-            Assert.AreEqual(result, "c");
+            Assert.AreEqual("c", result);
             result = queue.Dequeue();
-            Assert.AreEqual(result, "e");
+            Assert.AreEqual("e", result);
             Assert.Throws<NullReferenceException>(() => queue.Dequeue());
         }
     }

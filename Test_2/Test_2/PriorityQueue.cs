@@ -15,6 +15,7 @@ namespace Test_2
             dictionary = new Dictionary<int, (int, T)>();
             index = 0;
         }
+
         private Dictionary<int, (int, T)> dictionary;
         private int index = 0;
 
@@ -37,11 +38,13 @@ namespace Test_2
         {
             if (IsEmpty())
             {
-                throw new NullReferenceException();
+                throw new InvalidOperationException();
             }
+
             var result = dictionary.Values.First();
             var maxPriority = result.Item1;
             var currentKey = dictionary.Keys.First();
+
             foreach (var element in dictionary)
             {
                 if (element.Value.Item1 > maxPriority)
@@ -51,6 +54,7 @@ namespace Test_2
                     currentKey = element.Key;
                 }
             }
+
             dictionary.Remove(currentKey);
             return result.Item2;
         }
@@ -59,6 +63,6 @@ namespace Test_2
         /// Method that checks if the queue is empty.
         /// </summary>
         public bool IsEmpty()
-            => dictionary.Count == 0 ? true : false;
+            => dictionary.Count == 0;
     }
 }
