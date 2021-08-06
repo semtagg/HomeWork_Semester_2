@@ -38,7 +38,7 @@ namespace Test_2.Tests
             Assert.AreEqual("c", result);
             result = queue.Dequeue();
             Assert.AreEqual("e", result);
-            Assert.Throws<NullReferenceException>(() => queue.Dequeue());
+            Assert.Throws<InvalidOperationException>(() => queue.Dequeue());
         }
     }
 }
