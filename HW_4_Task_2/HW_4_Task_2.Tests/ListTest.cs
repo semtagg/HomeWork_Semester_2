@@ -12,7 +12,7 @@ namespace HW_4_Task_2.Tests
         {
             list.Insert(10, 0);
 
-            Assert.IsNotNull(list);
+            Assert.IsNotEmpty(Lists());
 
             list.Insert(20, 1);
             list.Insert(30, 2);

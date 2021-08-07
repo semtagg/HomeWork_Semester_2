@@ -16,7 +16,7 @@
 
         public override void Change(int value, int index)
         {
-            if (CheckValue(value) && SearchByValue(value) != index)
+            if (SearchByValue(value) != index)
             {
                 throw new ElementIsAlreadyExistException();
             }

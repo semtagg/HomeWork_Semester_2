@@ -30,7 +30,7 @@ namespace HW_4_Task_2
         private int listSize = 0;
 
         private bool CheckIndex(int index)
-            => index < 0 || listSize < index ? false : true;
+            => index >= 0 && listSize >= index;
 
         private ListNode SearchByIndex(int index)
         {
@@ -54,13 +54,13 @@ namespace HW_4_Task_2
             }
             if (head == null)
             {
-                head = new(value);
+                head = new ListNode(value);
             }
             else
             {
                 if (index == 0)
                 {
-                    head = new(value, head);
+                    head = new ListNode(value, head);
                 }
                 else if (index == listSize)
                 {
@@ -85,7 +85,8 @@ namespace HW_4_Task_2
             {
                 throw new ElementDoesNotExistException();
             }
-            SearchByIndex(index - 1).NextNode = SearchByIndex(index).NextNode;
+            var element = SearchByIndex(index - 1);
+            element.NextNode = element.NextNode.NextNode;
             listSize--;
         }
 
