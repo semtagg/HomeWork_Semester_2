@@ -16,7 +16,8 @@
 
         public override void Change(int value, int index)
         {
-            if (SearchByValue(value) != index)
+            var indexFlag = SearchByValue(value); 
+            if (indexFlag != index && indexFlag != -1)
             {
                 throw new ElementIsAlreadyExistException();
             }
