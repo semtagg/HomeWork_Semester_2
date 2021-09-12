@@ -9,23 +9,23 @@ namespace ParallelMatrixMultiplication
         {
             // size
             var result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
-            var threads = new List<Thread>();
+            var threads = new Thread[firstMatrix.GetLength(0)];
             for (var i = 0; i < firstMatrix.GetLength(0); i++)
             {
-                for (var j = 0; j < secondMatrix.GetLength(1); j++)
+                var columnIndex = i;
+                threads[i] = new Thread(() =>
                 {
-                    var columnIndex = i;
-                    var rowIndex = j;
-                    var thread = new Thread(() =>
+                    for (var j = 0; j < secondMatrix.GetLength(1); j++)
                     {
                         for (var k = 0; k < firstMatrix.GetLength(0); k++)
                         {
-                            result[columnIndex, rowIndex] += firstMatrix[columnIndex, k] * secondMatrix[k, rowIndex];
-                        }});
-                    thread.Start();
-                    threads.Add(thread);
-                }
+                            result[columnIndex, j] += firstMatrix[columnIndex, k] * secondMatrix[k, j];
+                        }
+                    }
+                });
             }
+            foreach (var t in threads)
+                t.Start();
             foreach (var t in threads)
                 t.Join();
             return result;
