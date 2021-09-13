@@ -1,15 +1,20 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 
 namespace ParallelMatrixMultiplication
 {
     public static class MatrixManager
     {
+        /// <summary>
+        /// Performs matrix multiplication, returns multiplication result or error.
+        /// </summary>
         public static int[,] MatrixMultiplication(int[,] firstMatrix, int[,] secondMatrix)
         {
-            // size
+            if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0))
+                throw new InvalidMatrixSizeException();
+            
             var result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
             var threads = new Thread[firstMatrix.GetLength(0)];
+            
             for (var i = 0; i < firstMatrix.GetLength(0); i++)
             {
                 var columnIndex = i;
@@ -24,10 +29,12 @@ namespace ParallelMatrixMultiplication
                     }
                 });
             }
+            
             foreach (var t in threads)
                 t.Start();
             foreach (var t in threads)
                 t.Join();
+            
             return result;
         }
     }
