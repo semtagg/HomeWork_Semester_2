@@ -1,2 +1,2 @@
 # ProgrammingSPBU
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/Semen-Tagiltsev/HomeWork_Semester_2)](https://ci.appveyor.com/api/projects/status/github/Semen-Tagiltsev/HomeWork_Semester_2)
+This repository was created for homework on programming at St. Petersburg State University.
