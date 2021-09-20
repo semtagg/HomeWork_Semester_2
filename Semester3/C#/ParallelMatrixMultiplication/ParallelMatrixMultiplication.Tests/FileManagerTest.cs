@@ -46,5 +46,20 @@ namespace ParallelMatrixMultiplication.Tests
             var secondMatrix = FileManager.ReadMatrixFromFile("..\\..\\..\\matrix2.txt");
             Assert.IsTrue(MatrixAreEqual(secondMatrix, expectedSecondMatrix));
         }
+
+        [Test]
+        public void WriteToFileTest()
+        {
+            var expectedMatrix = new int[2, 2]
+            {
+                {1, 2},
+                {3, 4}
+            };
+            
+            FileManager.WriteMatrixToFile(expectedMatrix, "hello.txt");
+            var matrix = FileManager.ReadMatrixFromFile("hello.txt");
+            Assert.IsTrue(MatrixAreEqual(matrix, expectedMatrix));
+        }
+        
     }
 }
