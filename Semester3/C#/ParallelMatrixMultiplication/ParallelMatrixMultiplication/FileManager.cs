@@ -35,7 +35,7 @@ namespace ParallelMatrixMultiplication
                     {
                         tw.Write(" ");
                     }
-                    tw.Write(matrix[i, j]);
+                    tw.Write(matrix[j, i]);
                 }
                 tw.WriteLine();
             }
