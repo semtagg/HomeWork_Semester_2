@@ -52,6 +52,7 @@ namespace ParallelMatrixMultiplication
             Test(100, 10);
             Test(500, 10);
             Test(1000, 10);
+            Test(2000, 10);
         }
     }
 }
