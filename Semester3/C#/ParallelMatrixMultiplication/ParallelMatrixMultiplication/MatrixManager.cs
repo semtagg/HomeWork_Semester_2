@@ -11,10 +11,13 @@ namespace ParallelMatrixMultiplication
         public static int[,] ParallelMatrixMultiplication(int[,] firstMatrix, int[,] secondMatrix)
         {
             if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0))
+            {
                 throw new InvalidMatrixSizeException();
-            
+            }
+
             var result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
-            var threads = new Thread[firstMatrix.GetLength(0)];
+            var threadCount = Environment.ProcessorCount;
+            var threads = new Thread[threadCount];
             
             for (var i = 0; i < firstMatrix.GetLength(0); i++)
             {
@@ -30,11 +33,16 @@ namespace ParallelMatrixMultiplication
                     }
                 });
             }
-            
-            foreach (var t in threads)
-                t.Start();
-            foreach (var t in threads)
-                t.Join();
+
+            foreach (var thread in threads)
+            {
+                thread.Start();
+            }
+
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
             
             return result;
         }

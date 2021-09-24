@@ -16,8 +16,8 @@ namespace ParallelMatrixMultiplication
             var firstVariance = Math.Sqrt(firstWatch.Select(t => Math.Pow(t - firstExpectation, 2)).Average());
             var secondVariance = Math.Sqrt(secondWatch.Select(t => Math.Pow(t - secondExpectation, 2)).Average());
             
-            Console.WriteLine($"Обычное вычисление.\n Мат. ожидание: {firstExpectation} ms. Среднеквадратичное значение: {firstVariance} ms.");
-            Console.WriteLine($"Параллельное вычисление.\n Мат. ожидание: {secondExpectation} ms. Среднеквадратичное значение: {secondVariance} ms.");
+            Console.WriteLine($"Обычное вычисление.\n Мат. ожидание: {firstExpectation} ms. Среднеквадратичное отклонение: {firstVariance} ms.");
+            Console.WriteLine($"Параллельное вычисление.\n Мат. ожидание: {secondExpectation} ms. Среднеквадратичное отклонение: {secondVariance} ms.");
             Console.WriteLine("**********************");
         }
         
@@ -49,9 +49,9 @@ namespace ParallelMatrixMultiplication
         
         static void Main(string[] args)
         {
-            Test(10, 100);
             Test(100, 10);
             Test(1000, 10);
+            Test(2000, 10);
         }
     }
 }
