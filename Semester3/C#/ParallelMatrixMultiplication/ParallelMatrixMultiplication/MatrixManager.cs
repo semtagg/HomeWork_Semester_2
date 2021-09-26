@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace ParallelMatrixMultiplication
 {
+    /// <summary>
+    /// A class containing methods that multiply matrices (in parallel and ordinary).
+    /// </summary>
     public static class MatrixManager
     {
         /// <summary>
@@ -16,19 +19,27 @@ namespace ParallelMatrixMultiplication
             }
 
             var result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
-            var threadCount = Environment.ProcessorCount;
-            var threads = new Thread[threadCount];
+            var threadsCount = Environment.ProcessorCount;
+            var threads = new Thread[threadsCount];
+            var iterationsCount = firstMatrix.GetLength(0) / threadsCount;
             
-            for (var i = 0; i < firstMatrix.GetLength(0); i++)
+            for (var index = 0; index < threadsCount; index++)
             {
-                var columnIndex = i;
-                threads[i] = new Thread(() =>
+                var startPoint = index * iterationsCount;
+                var endPoint = index == threadsCount - 1 && firstMatrix.GetLength(0) % threadsCount != 0
+                    ? firstMatrix.GetLength(0)
+                    : (index + 1) * iterationsCount;
+                
+                threads[index] = new Thread(() =>
                 {
-                    for (var j = 0; j < secondMatrix.GetLength(1); j++)
+                    for (var i = startPoint; i < endPoint; i++)
                     {
-                        for (var k = 0; k < firstMatrix.GetLength(0); k++)
+                        for (var j = 0; j < secondMatrix.GetLength(1); j++)
                         {
-                            result[columnIndex, j] += firstMatrix[columnIndex, k] * secondMatrix[k, j];
+                            for (var k = 0; k < firstMatrix.GetLength(0); k++)
+                            {
+                                result[i, j] += firstMatrix[i, k] * secondMatrix[k, j];
+                            }
                         }
                     }
                 });
@@ -54,7 +65,7 @@ namespace ParallelMatrixMultiplication
             {
                 for (var j = 0; j < columnNumber; j++)
                 {
-                    matrix[i, j] = new Random().Next() % 100;
+                    matrix[i, j] = new Random().Next() % 1000;
                 }    
             }
 
@@ -70,7 +81,7 @@ namespace ParallelMatrixMultiplication
                 {
                     for (var k = 0; k < m2.GetLength(0); k++)
                     {
-                        result[i,j] += m1[i,k] * m2[k,j];
+                        result[i, j] += m1[i, k] * m2[k, j];
                     }
                 }
             }

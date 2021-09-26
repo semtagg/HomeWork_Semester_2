@@ -52,8 +52,8 @@ namespace ParallelMatrixMultiplication.Tests
         {
             var expectedMatrix = new int[2, 2]
             {
-                {1, 2},
-                {3, 4}
+                { 1, 2 },
+                { 3, 4 }
             };
             
             FileManager.WriteMatrixToFile(expectedMatrix, "hello.txt");
