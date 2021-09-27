@@ -5,6 +5,8 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./Semester3
     steps:
       - name: Switch autocrlf
         run: git config --global core.autocrlf input
@@ -18,13 +20,13 @@ jobs:
           dotnet-version: '5.0.x'
 
       - name: Nuget restore
-        working-directory: Semester3
         run: for f in $(find . -name "*.sln"); do nuget restore $f; done
+        working-directory: ${{env.working-directory}}
 
       - name: Build with dotnet
-        working-directory: Semester3
         run: for f in $(find . -name "*.sln"); do dotnet build $f; done
+        working-directory: ${{env.working-directory}}
 
       - name: Run unit tests
-        working-directory: Semester3
         run: for f in $(find . -name "*.sln"); do dotnet test $f; done
+        working-directory: ${{env.working-directory}}
