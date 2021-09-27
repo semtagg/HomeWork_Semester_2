@@ -4,10 +4,14 @@ init:
   - git config --global core.autocrlf false
 
 before_build:
+    - cd: Semester3
     - For /R %%I in (*.sln) do nuget restore %%I
 
 build_script:
+    - cd: Semester3
     - For /R %%I in (*.sln) do dotnet build %%I
 
 test_script:
+    - cd: Semester3
     - For /R %%I in (*.sln) do dotnet test %%I
+    
