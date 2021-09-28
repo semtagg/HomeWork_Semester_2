@@ -12,7 +12,7 @@ namespace Lazy
         private Func<T> _supplier;
         private T _result;
         private bool _isResultCalculated;
-        private readonly Object _lockObject = new();
+        private readonly object _lockObject = new();
         
         public T Get()
         {
