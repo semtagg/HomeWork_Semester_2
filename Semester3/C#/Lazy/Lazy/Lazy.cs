@@ -2,6 +2,10 @@
 
 namespace Lazy
 {
+    /// <summary>
+    /// A class that implements the ILazy interface in single-threaded mode.
+    /// </summary>
+    /// <typeparam name="T">Parameter type.</typeparam>
     public class Lazy<T> : ILazy<T>
     {
         public Lazy(Func<T> supplier)

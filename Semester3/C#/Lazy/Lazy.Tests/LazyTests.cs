@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Threading;
 using NUnit.Framework;
 
@@ -7,11 +6,6 @@ namespace Lazy.Tests
 {
     public class LazyTests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test]
         public void SimpleLazyTest()
         {
