@@ -4,7 +4,7 @@
     /// An interface representing a lazy calculation.
     /// </summary>
     /// <typeparam name="T">Parameter type.</typeparam>
-    public interface ILazy<T>
+    public interface ILazy<out T>
     {
         /// <summary>
         /// Returns the calculation result.

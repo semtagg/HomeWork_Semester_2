@@ -9,8 +9,8 @@ namespace Lazy.Tests
         [Test]
         public void SimpleLazyTest()
         {
-            var intLazy = LazyFactory<int>.CreateLazy(() => 1);
-            var stringLazy = LazyFactory<string>.CreateLazy(() => "a");
+            var intLazy = LazyFactory.CreateLazy(() => 1);
+            var stringLazy = LazyFactory.CreateLazy(() => "a");
             
             for (var i = 0; i < 10; i++)
             {
@@ -22,8 +22,8 @@ namespace Lazy.Tests
         [Test]
         public void SimpleLazyParallelTest()
         {
-            var intLazy = LazyFactory<int>.CreateParallelLazy(() => 1);
-            var stringLazy = LazyFactory<string>.CreateParallelLazy(() => "a");
+            var intLazy = LazyFactory.CreateParallelLazy(() => 1);
+            var stringLazy = LazyFactory.CreateParallelLazy(() => "a");
             
             for (var i = 0; i < 10; i++)
             {
@@ -35,8 +35,8 @@ namespace Lazy.Tests
         [Test]
         public void SupplierCanBeNullTest()
         {
-            var nullLazy = LazyFactory<string>.CreateLazy(() => null);
-            var nullParallelLazy = LazyFactory<string>.CreateParallelLazy(() => null);
+            var nullLazy = LazyFactory.CreateLazy<string>(() => null);
+            var nullParallelLazy = LazyFactory.CreateParallelLazy<string>(() => null);
             
             for (var i = 0; i < 10; i++)
             {
@@ -49,7 +49,7 @@ namespace Lazy.Tests
         public void RacesForParallelLazyTest()
         {
             var count = 0;
-            var result = LazyFactory<int>.CreateParallelLazy(() => Interlocked.Increment(ref count));
+            var result = LazyFactory.CreateParallelLazy(() => Interlocked.Increment(ref count));
             var threads = new Thread[Environment.ProcessorCount];
             for (var index = 0; index < threads.Length; index++)
             {
