@@ -22,8 +22,17 @@ void task1(int n) {
     }
 }
 
+int task2(int x, int i) {
+    return x | (1 << i);
+}
+
+int task3(int x, int i) {
+    return x & ~(1 << i);
+}
 
 int main() {
     task1(1);
+    cout << task2(16, 2) << endl;
+    cout << task3(20, 2) << endl;
     return 0;
 }
