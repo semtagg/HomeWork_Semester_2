@@ -10,7 +10,7 @@ namespace Lazy
     {
         public Lazy(Func<T> supplier)
         {
-            _supplier = supplier;
+            _supplier = supplier ?? throw new ArgumentNullException(nameof(supplier), "Func can't be null.");
         }
 
         private Func<T> _supplier;
@@ -24,8 +24,6 @@ namespace Lazy
                 _result = _supplier();
                 _isResultCalculated = true;
                 _supplier = null;
-
-                return _result;
             }
 
             return _result;

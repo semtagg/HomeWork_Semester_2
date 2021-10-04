@@ -10,7 +10,7 @@ namespace Lazy
     {
         public LazyParallel(Func<T> supplier)
         {
-            _supplier = supplier;
+            _supplier = supplier ?? throw new ArgumentNullException(nameof(supplier), "Func can't be null.");
         }
 
         private Func<T> _supplier;
@@ -20,19 +20,21 @@ namespace Lazy
         
         public T Get()
         {
-            if (!_isResultCalculated)
+            if (_isResultCalculated)
             {
-                lock (_lockObject)
-                {
-                    if (!_isResultCalculated)
-                    {
-                        _result = _supplier();
-                        _isResultCalculated = true;
-                        _supplier = null;
-                    }
-                }
+                return _result;
             }
             
+            lock (_lockObject)
+            {
+                if (!_isResultCalculated)
+                {
+                    _result = _supplier();
+                    _supplier = null;
+                    _isResultCalculated = true;
+                }
+            }
+
             return _result;
         }
     }
