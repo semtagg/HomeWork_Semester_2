@@ -7,7 +7,7 @@ namespace Lazy.Tests
     public class LazyTests
     {
         [TestCaseSource(typeof(Lazies), nameof(Lazies.Lazy))]
-        public void SimpleLazyTest(Lazy<int> lazy, int expectedValue)
+        public void SimpleLazyTest<T>(Lazy<T> lazy, T expectedValue)
         {
             for (var i = 0; i < 10; i++)
             {
@@ -17,7 +17,7 @@ namespace Lazy.Tests
         }
 
         [TestCaseSource(typeof(Lazies), nameof(Lazies.LazyParallel))]
-        public void SimpleLazyParallelTest(LazyParallel<int> lazy, int expectedValue)
+        public void SimpleLazyParallelTest<T>(LazyParallel<T> lazy, T expectedValue)
         {
             for (var i = 0; i < 10; i++)
             {
