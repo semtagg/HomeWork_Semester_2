@@ -4,15 +4,15 @@
     {
         public static object[] Lazy =
         {
-            new object[] { LazyFactory.CreateLazy(() => ++_value1), 1 }
+            new object[] { LazyFactory.CreateLazy(() => ++_firstValue), 1 }
         };
         
         public static object[] LazyParallel =
         {
-            new object[] { LazyFactory.CreateParallelLazy(() => ++_value2), 1 }
+            new object[] { LazyFactory.CreateParallelLazy(() => ++_secondValue), 1 }
         };
         
-        private static int _value1 = 0;
-        private static int _value2 = 0;
+        private static int _firstValue = 0;
+        private static int _secondValue = 0;
     }
 }
