@@ -6,43 +6,31 @@ namespace Lazy.Tests
 {
     public class LazyTests
     {
-        [Test]
-        public void SimpleLazyTest()
+        [TestCaseSource(typeof(Lazies), nameof(Lazies.Lazy))]
+        public void SimpleLazyTest<T>(ILazy<T> lazy, T expectedValue)
         {
-            var intLazy = LazyFactory.CreateLazy(() => 1);
-            var stringLazy = LazyFactory.CreateLazy(() => "a");
-            
             for (var i = 0; i < 10; i++)
             {
-                Assert.AreEqual(1, intLazy.Get());
-                Assert.AreEqual("a", stringLazy.Get());
+                var value = lazy.Get();
+                Assert.AreEqual(expectedValue, value);
+            }
+        }
+
+        [TestCaseSource(typeof(Lazies), nameof(Lazies.LazyParallel))]
+        public void SimpleLazyParallelTest<T>(ILazy<T> lazy, T expectedValue)
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                var value = lazy.Get();
+                Assert.AreEqual(expectedValue, value);
             }
         }
 
         [Test]
-        public void SimpleLazyParallelTest()
+        public void SupplierCannotBeNullTest()
         {
-            var intLazy = LazyFactory.CreateParallelLazy(() => 1);
-            var stringLazy = LazyFactory.CreateParallelLazy(() => "a");
-            
-            for (var i = 0; i < 10; i++)
-            {
-                Assert.AreEqual(1, intLazy.Get());
-                Assert.AreEqual("a", stringLazy.Get());
-            }
-        }
-
-        [Test]
-        public void SupplierCanBeNullTest()
-        {
-            var nullLazy = LazyFactory.CreateLazy<string>(() => null);
-            var nullParallelLazy = LazyFactory.CreateParallelLazy<string>(() => null);
-            
-            for (var i = 0; i < 10; i++)
-            {
-                Assert.AreEqual(null, nullLazy.Get());
-                Assert.AreEqual(null, nullParallelLazy.Get());
-            }
+            Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateLazy<string>(null));
+            Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateParallelLazy<string>(null));
         }
 
         [Test]
@@ -72,5 +60,20 @@ namespace Lazy.Tests
                 thread.Join();
             }
         }
+    }
+    
+    class Lazies
+    {
+        public static object[] Lazy =
+        {
+            new object[] { LazyFactory.CreateLazy(() => 1), 1 },
+            new object[] { LazyFactory.CreateLazy(() => "a"), "a" }
+        };
+        
+        public static object[] LazyParallel =
+        {
+            new object[] { LazyFactory.CreateParallelLazy(() => 1), 1 },
+            new object[] { LazyFactory.CreateParallelLazy(() => "a"), "a" }
+        };
     }
 }
