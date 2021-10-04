@@ -7,7 +7,7 @@ namespace Lazy.Tests
     public class LazyTests
     {
         [TestCaseSource(typeof(Lazies), nameof(Lazies.Lazy))]
-        public void SimpleLazyTest<T>(ILazy<T> lazy, T expectedValue)
+        public void SimpleLazyTest(Lazy<int> lazy, int expectedValue)
         {
             for (var i = 0; i < 10; i++)
             {
@@ -17,7 +17,7 @@ namespace Lazy.Tests
         }
 
         [TestCaseSource(typeof(Lazies), nameof(Lazies.LazyParallel))]
-        public void SimpleLazyParallelTest<T>(ILazy<T> lazy, T expectedValue)
+        public void SimpleLazyParallelTest(LazyParallel<int> lazy, int expectedValue)
         {
             for (var i = 0; i < 10; i++)
             {
@@ -60,20 +60,5 @@ namespace Lazy.Tests
                 thread.Join();
             }
         }
-    }
-    
-    class Lazies
-    {
-        public static object[] Lazy =
-        {
-            new object[] { LazyFactory.CreateLazy(() => 1), 1 },
-            new object[] { LazyFactory.CreateLazy(() => "a"), "a" }
-        };
-        
-        public static object[] LazyParallel =
-        {
-            new object[] { LazyFactory.CreateParallelLazy(() => 1), 1 },
-            new object[] { LazyFactory.CreateParallelLazy(() => "a"), "a" }
-        };
     }
 }
