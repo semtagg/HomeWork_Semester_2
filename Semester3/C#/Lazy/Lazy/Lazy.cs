@@ -22,8 +22,8 @@ namespace Lazy
             if (!_isResultCalculated)
             {
                 _result = _supplier();
-                _isResultCalculated = true;
                 _supplier = null;
+                _isResultCalculated = true;
             }
 
             return _result;
