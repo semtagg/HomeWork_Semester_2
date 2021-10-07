@@ -12,6 +12,13 @@ int e_b(int r, float x, float y) {
     return r * r - (x * x + y * y) >= -10e-6 ? 1 : 0;
 }
 
+bool e_c(int m, int f) {
+    for (int i = 0; i < m; i++)
+        if (i * i % m == f)
+            return true;
+    return false;
+}
+
 int e_d(int y, int m, int d) {
     if (m < 3)
         y--, m += 12;
@@ -31,11 +38,9 @@ int m_a(int v1, int v2, int v3) {
         return v3 % gcd(v1, v2) == 0;
 }
 
-bool is_prime(int x)
-{
+bool is_prime(int x) {
     int p = 2;
-    while (p * p <= x)
-    {
+    while (p * p <= x) {
         if (x % p == 0)
             return false;
         p++;
@@ -43,9 +48,8 @@ bool is_prime(int x)
     return true;
 }
 
-bool m_2(int a, int b)
-{
-    if (a/2 < b)
+bool m_2(int a, int b) {
+    if (a / 2 < b)
         return false;
 
 }
@@ -62,7 +66,7 @@ int main() {
     cout << e_a(10, 12) << endl;
     cout << e_b(1, 0.8, 0.6) << endl;
     cout << e_d(2001, 3, 1) - e_d(2001, 2, 1) << endl;
-    cout << m_a(3,5,4)<< endl;
+    cout << m_a(3, 5, 4) << endl;
 
     return 0;
 }
