@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 
@@ -6,31 +7,23 @@ namespace Lazy.Tests
 {
     public class LazyTests
     {
-        [TestCaseSource(typeof(Lazies), nameof(Lazies.Lazy))]
-        public void SimpleLazyTest<T>(Lazy<T> lazy, T expectedValue)
+        [TestCaseSource(nameof(Lazies))]
+        public void SimpleLazyTest(Func<Func<int>, ILazy<int>> lazies)
         {
+            var value = 0;
+            var lazy = lazies(() => ++value);
+            
             for (var i = 0; i < 10; i++)
             {
-                var value = lazy.Get();
-                Assert.AreEqual(expectedValue, value);
+                var result = lazy.Get();
+                Assert.AreEqual(1, result);
             }
         }
 
-        [TestCaseSource(typeof(Lazies), nameof(Lazies.LazyParallel))]
-        public void SimpleLazyParallelTest<T>(LazyParallel<T> lazy, T expectedValue)
+        [TestCaseSource(nameof(Lazies))]
+        public void SupplierCannotBeNullTest(Func<Func<int>, ILazy<int>> lazies)
         {
-            for (var i = 0; i < 10; i++)
-            {
-                var value = lazy.Get();
-                Assert.AreEqual(expectedValue, value);
-            }
-        }
-
-        [Test]
-        public void SupplierCannotBeNullTest()
-        {
-            Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateLazy<string>(null));
-            Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateParallelLazy<string>(null));
+            Assert.Throws<ArgumentNullException>(() => lazies(null));
         }
 
         [Test]
@@ -59,6 +52,12 @@ namespace Lazy.Tests
             {
                 thread.Join();
             }
+        }
+        
+        private static IEnumerable<Func<Func<int>, ILazy<int>>> Lazies()
+        {
+            yield return LazyFactory.CreateLazy;
+            yield return LazyFactory.CreateParallelLazy;
         }
     }
 }

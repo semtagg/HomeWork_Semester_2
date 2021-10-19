@@ -9,9 +9,7 @@ namespace Lazy
     public class Lazy<T> : ILazy<T>
     {
         public Lazy(Func<T> supplier)
-        {
-            _supplier = supplier ?? throw new ArgumentNullException(nameof(supplier), "Func can't be null.");
-        }
+            => _supplier = supplier ?? throw new ArgumentNullException(nameof(supplier), "Func can't be null.");
 
         private Func<T> _supplier;
         private T _result;
