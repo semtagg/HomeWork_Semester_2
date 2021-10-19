@@ -15,7 +15,7 @@ namespace Lazy
 
         private Func<T> _supplier;
         private T _result;
-        private bool _isResultCalculated;
+        private volatile bool _isResultCalculated;
         private readonly object _lockObject = new();
         
         public T Get()
@@ -27,12 +27,14 @@ namespace Lazy
             
             lock (_lockObject)
             {
-                if (!_isResultCalculated)
+                if (_isResultCalculated)
                 {
-                    _result = _supplier();
-                    _supplier = null;
-                    _isResultCalculated = true;
+                    return _result;
                 }
+                    
+                _result = _supplier();
+                _supplier = null;
+                _isResultCalculated = true;
             }
 
             return _result;
